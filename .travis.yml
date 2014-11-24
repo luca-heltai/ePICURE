@@ -1,0 +1,6 @@
+language: python
+install: easy_install nose
+script: nosetests tests
+branches:
+  only:
+    - master
