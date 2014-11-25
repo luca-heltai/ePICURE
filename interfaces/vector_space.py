@@ -34,7 +34,7 @@ class VectorSpace:
         return (0, 1)
 
     def cell_span(self, i):
-        """ VectorSpace.cell_span(i): an array of indices containing the basis functions which are non zero on the i-th cell """
+        """ An array of indices containing the basis functions which are non zero on the i-th cell """
         self.check_index(i)
         return [0]
 
