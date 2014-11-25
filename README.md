@@ -124,16 +124,18 @@ in the `issues` section of the git-hub repository.
   position of a **computable object**. [TBD: interface]
 
 - An abstract python interface of type `VectorSpace`, used to describe
-   *one dimensional functions* on `[0,1]`, as *coefficients* times *basis
+   *one dimensional functions* on `[a,b]`, as *coefficients* times *basis
    functions*, with access to single basis functions, their derivatives,
-   their support and  the  splitting of `[0,1]` into
+   their support and  the  splitting of `[a,b]` into
    sub-intervals where *each basis* is assumed to be smooth. In
    particular, the following structure should be implemented for each
    type of basis:
 
 	- `VectorSpace.n_dofs`:  the number of basis functions that span
 	  the space (*degrees of freedom*)
-	- `VectorSpace.n_cells`: the number of sub-intervals of `[0,1]`
+	- `VectorSpace.n_dofs_per_end_point`: the number of dofs
+      associated with the end points
+	- `VectorSpace.n_cells`: the number of sub-intervals of `[a,b]`
       where each basis is smooth
 	- `VectorSpace.cells`: the `n_cells+1` splitting points that make
       the `cells` of the `VectorSpace`
@@ -153,11 +155,16 @@ in the `issues` section of the git-hub repository.
 - The implementation of the above for
 
 	- Power basis functions
-	- Continuous Lagrange (Newton-Cotes with end points) basis
-      functions, of degree `n` with `N` repetitions
-	- Bernstein basis functions of degree `n` with `N` repetitions
+	- Continuous Lagrange (Newton-Cotes with and without end points)
+      basis functions, of degree `n` with `1` repetition
+	- Bernstein basis functions of degree `n` with `1` repetition
 	- B-spline basis functions with given degree and knot_vector
 	- NURBS basis functions with given degree and knot_vector
+
+- A `CompositeVectorSpace`, taking a subdivision of the interval
+  `[a,b]`, a `VectorSpace` on `[0,1]` and constructing a composite
+  vector space which is a rescaled repetition of `VectorSpace` on each
+  subinterval
 
 - An abstract python interface of type `TimeAnalysis`, capable of
    taking derivatives and integrals of **collections of paths**, given
