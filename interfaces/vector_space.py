@@ -29,10 +29,12 @@ class VectorSpace:
         return lambda x: 0.0
 
     def basis_span(self, i):
+        """ VectorSpace.basis_span(i): a tuple indicating the start and end indices into the cells object where the i-th basis function is different from zero"""
         self.check_index(i)
         return (0, 1)
 
     def cell_span(self, i):
+        """ VectorSpace.cell_span(i): an array of indices containing the basis functions which are non zero on the i-th cell """
         self.check_index(i)
         return [0]
 
@@ -46,6 +48,7 @@ class VectorSpace:
             y += self.basis(i)(x)*c[i]
     
     def element(self, c):
+        """  VectorSpace.element(c): a callable function, representing sum(c[i] * basis[i]), which exploits the locality of the basis functions """
         assert len(c) == self.n_dofs, \
             'Incompatible vector. It should have length %. It has lenght %'.format(self.n_dofs, len(c))
         return lambda x: self.eval(c, x)
