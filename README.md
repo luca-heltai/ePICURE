@@ -174,7 +174,7 @@ in the `issues` section of the git-hub repository.
 
 - An `Interpolation` utility, taking a `VectorSpace`, `n_dofs` points,
   and constructing a solution `c` to the problem
-  `sum_over_j(c[j]*b[j](x[j])) = f(x[i])`
+  `sum_over_j(c[j]*b[j](x[i])) = f(x[i])`
 
 - A `LeastSquare` utility, doing the same but with `n>n_dofs` points
   and using least squares
