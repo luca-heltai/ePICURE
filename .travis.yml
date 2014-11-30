@@ -20,7 +20,10 @@ before_install:
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib nose dateutil pandas statsmodels
   - pip install coveralls
+<<<<<<< HEAD
   - ./setup.sh
+=======
+>>>>>>> Trying to make travis happy.
  
 # Run test
 script:
