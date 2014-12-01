@@ -84,7 +84,7 @@ def test_reparametrization():
 
     # Number of interpolation points minus one
     n = 5
-    toll = 1.e-5
+    toll = 1.e-2
     points = np.linspace(0, 1, (n+1) ) 
     R = 1
     P = 1
@@ -118,11 +118,12 @@ def test_reparametrization():
     # plt.close()
     # plt.close()
 
-    test_velocity_2d = [np.linalg.norm(new_dummy_curve_2d.derivative(x[i])) for i in range(len(x))]
-    test_velocity_2d = [np.linalg.norm(new_dummy_curve_2d.derivative(x[i])) for i in range(len(x))]
- #   assert (length2d - test_velocity_2d.any()) > toll
- #   assert (length2d - test_velocity_3d.any()) > toll
-    assert True
+    test_velocity_2d = np.array([np.linalg.norm(new_dummy_curve_2d.derivative(x[i])) for i in range(len(x))])
+    test_velocity_3d = np.array([np.linalg.norm(new_dummy_curve_3d.derivative(x[i])) for i in range(len(x))])
+    print l2, test_velocity_2d
+    assert (l2 - test_velocity_2d.all()) < toll
+    assert (l3 - test_velocity_3d.all()) < toll
+ #   assert True
 
 
 
