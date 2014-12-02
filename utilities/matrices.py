@@ -29,16 +29,4 @@ def interpolation_matrix(vs, points):
     return np.asmatrix(M)
 
 
-def mass_matrix(vs, degree=2):
-    """Create a mass matrix for the given vector space."""
-    (qp, w) = leggauss(degree)
-    # The default are on [-1,1]: rescale them
-    qp = (qp+1)*.5
-    w *= .5
-
-    M = zeros(vs.n_dofs)
-    for c in xrange(vs.n_cells):
-        dofs = vs.cell_span(c)
-        mloc = zeros((dofs,dofs))
-        q = qp*(vs.cells[c+1]-vs.cells[c])+vs.cells[c]
         
