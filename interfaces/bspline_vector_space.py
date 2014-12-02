@@ -1,20 +1,10 @@
 import numpy as np
-# import Nurbs as nurb
-
-# cntrl = [[-50., -75., 25., 0., -25., 75., 50.],
-#          [25., 50., 50., 0., -50., -50., 25.]]
-# knots = [0., 0., 0., .2, .4, .6, .8, 1., 1., 1.]
-
-# crv = nurb.Crv(cntrl, knots)
-# crv.plot()
+from interfaces.vector_space import VectorSpace
 
 
-class BsplineVectorSpace(object):
+class BsplineVectorSpace(VectorSpace):
     """A python interface used to describe *one dimensional Bspline basis
-    functions* on `[a,b]`, as *coefficients* times *basis functions*, with
-    access to single basis functions, their derivatives, their support and
-    the  splitting of `[a,b]` into sub-intervals where *each basis* is
-    assumed to be smooth.
+    functions* onthe interval given by the first and last knot.
 
     The base class constructs the constant vector space.
     """
@@ -29,15 +19,19 @@ class BsplineVectorSpace(object):
         self.knots_unique = np.unique(self.knots_with_rep)
         self.n_knots = self.knots_with_rep.shape[0]
         self.mults = self.compute_mults(self.knots_with_rep)
-        self.n_dofs = self.n_knots - (self.degree + 1)
 
+        assert ( self.n_knots - (self.degree + 1) ) > 0
+        self.n_dofs = self.n_knots - (self.degree + 1)
         # self.n_dofs = self.compute_n_dofs(self.knots_unique, self.mults, self.degree)
-        
-        # self.n_dofs_per_end_point = 0
-        # self.n_cells = 1
-        # self.cells = np.array([a, b])
+
+        self.n_cells = len(self.knots_unique) - 1
+        self.n_dofs_per_end_point = 1
+        self.cells = self.knots_unique
 
     def compute_mults(self, knots_with_rep):
+        """Compute the multiplicity of each knot given the original knot vector.
+        It returns a numpy array. It has len(knots_unique) elements.
+        """
         assert len(knots_with_rep) > 1
         
         j = 1

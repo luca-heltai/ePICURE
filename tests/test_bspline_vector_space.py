@@ -2,6 +2,7 @@ from interfaces.bspline_vector_space import *
 from nose.tools import *
 import numpy as np
 
+
 def test_bspline_vector_space_default_constructor():
     a = BsplineVectorSpace()
     
@@ -10,7 +11,7 @@ def test_bspline_vector_space_default_constructor():
     assert a.knots_with_rep[0] == 0.
     assert a.knots_with_rep[1] == 1.
     assert a.knots_unique[0] == 0.
-    assert a.knots_unique[0] == 0.
+    assert a.knots_unique[1] == 1.
     
     assert a.n_knots == 2
     
@@ -19,6 +20,12 @@ def test_bspline_vector_space_default_constructor():
 
     assert a.n_dofs == 1
     
+    assert a.n_cells == 1
+
+    assert a.n_dofs_per_end_point == 1
+
+    assert a.cells[0] == 0.
+    assert a.cells[1] == 1.
 
 def test_bspline_vector_space_general_constructor():
     a = BsplineVectorSpace(2, [0.,0.,0.,.5,1.,1.,1.])
@@ -44,6 +51,14 @@ def test_bspline_vector_space_general_constructor():
     assert a.mults[2] == 3
 
     assert a.n_dofs == 4
+
+    assert a.n_cells == 2
+
+    assert a.n_dofs_per_end_point == 1
+
+    assert a.cells[0] == 0.
+    assert a.cells[1] == 0.5
+    assert a.cells[2] == 1.
 
 
 def test_compute_mults():
