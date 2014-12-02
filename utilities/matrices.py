@@ -29,7 +29,7 @@ def interpolation_matrix(vs, points):
     return np.asmatrix(M)
 
 
-def mass_matrix(vs, degree=vs.degree):
+def mass_matrix(vs, degree=2):
     """Create a mass matrix for the given vector space."""
     (qp, w) = leggauss(degree)
     # The default are on [-1,1]: rescale them
