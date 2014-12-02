@@ -1,4 +1,4 @@
-def root_bisec(f,a,b,error=10**-7){
+def root_bisec(f,a=0,b=1,error=10**-7):
     '''Root of a function using the bisection method
     
     The aruments expected are:
@@ -21,12 +21,11 @@ def root_bisec(f,a,b,error=10**-7){
                 return x
             elif ext>0:
                 a=x
-            else
+            else:
                 b=x
         return x
-    }
     
-def root_bisec(f,df,a,error=10**-7){
+def root_newton(f,df,a,error=10**-7):
     '''Root of a function using the Newton-Raphson method
     
     The aruments expected are:
@@ -42,7 +41,6 @@ def root_bisec(f,df,a,error=10**-7){
     cond=True
     while cond:
         x=lx-f(lx)/df(lx)
-        cond=abs(x-lx)
+        cond=abs(x-lx)>error
         lx=x
     return x
-    }
