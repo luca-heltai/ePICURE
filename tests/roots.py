@@ -26,4 +26,23 @@ def root_bisec(f,a,b,error=10**-7){
         return x
     }
     
-
+def root_bisec(f,df,a,error=10**-7){
+    '''Root of a function using the Newton-Raphson method
+    
+    The aruments expected are:
+    f: a function with the format double f(double x)
+    df: derivative of the function with the same format
+    a: initial approximation of the root.
+    error: precision for the root determination default value 10^-7
+    '''
+    ext=f(a)
+    lx=a
+    if ext==0:
+        return a
+    cond=True
+    while cond:
+        x=lx-f(lx)/df(lx)
+        cond=abs(x-lx)
+        lx=x
+    return x
+    }
