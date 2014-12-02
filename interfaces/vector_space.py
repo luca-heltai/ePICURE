@@ -49,11 +49,27 @@ class VectorSpace(object):
             y += self.basis(i)(x)*c[i]
         return y
     
+    def eval_der(self, c, d, x):
+        assert len(c) == self.n_dofs, \
+            'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
+        # Find the cell where x lies:
+        y = 0*x
+        # TBD: make this function aware of locality
+        for i in xrange(self.n_dofs):
+            y += self.basis_der(i,d)(x)*c[i]
+        return y
+    
     def element(self, c):
         """VectorSpace.element(c): a callable function, representing sum(c[i] *
         basis[i]), which exploits the locality of the basis functions
         """
         return lambda x: self.eval(c, x)
+    
+    def element_der(self, c, d):
+        """VectorSpace.element(c): a callable function, representing sum(c[i] *
+        basis[i]), which exploits the locality of the basis functions
+        """
+        return lambda x: self.eval_der(c, d, x)
 
     def print_info(self):
         print '============================================================'
