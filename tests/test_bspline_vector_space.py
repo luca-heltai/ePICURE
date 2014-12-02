@@ -77,3 +77,26 @@ def test_compute_n_dofs():
     assert a.compute_n_dofs(np.asarray([0.,2.,3.,5.], np.float),
                                        np.asarray([4,2,1,4], np.int_), 3) == 7
 
+
+def test_cell_span():
+    a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.5,5.,6.,6.,6.,6.])
+    assert a.cell_span(0)[0] == 0
+    assert a.cell_span(0)[1] == 1
+    assert a.cell_span(0)[2] == 2
+    assert a.cell_span(0)[3] == 3
+
+    assert a.cell_span(1)[0] == 1
+    assert a.cell_span(1)[1] == 2
+    assert a.cell_span(1)[2] == 3
+    assert a.cell_span(1)[3] == 4
+
+    assert a.cell_span(2)[0] == 2
+    assert a.cell_span(2)[1] == 3
+    assert a.cell_span(2)[2] == 4
+    assert a.cell_span(2)[3] == 5
+
+    assert a.cell_span(3)[0] == 3
+    assert a.cell_span(3)[1] == 4
+    assert a.cell_span(3)[2] == 5
+    assert a.cell_span(3)[3] == 6
+

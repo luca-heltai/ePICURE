@@ -58,41 +58,16 @@ class BsplineVectorSpace(VectorSpace):
         return n_dofs
 
 
-    # def check_index(self, i):
-    #     assert i< self.n_dofs, \
-    #         'Trying to access base %, but we only have %'.format(i, self.n_dofs)
+    def cell_span(self, i):
+        """ An array of indices containing the basis functions which are non zero on the i-th cell """
+        assert i >= 0
+        assert i < self.n_cells
 
-    # def basis(self, i):
-    #     self.check_index(i)
-    #     return lambda x: 1.0
+        n = 0
+        for j in range(i+1):
+            n += self.mults[j]
+        non_zero_bases = list()
+        for j in range(self.degree + 1):
+            non_zero_bases.append(n - self.degree - 1 + j)
 
-    # def basis_der(self, i, d):
-    #     self.check_index(i)
-    #     return lambda x: 0.0
-
-    # def basis_span(self, i):
-    #     """ VectorSpace.basis_span(i): a tuple indicating the start and end indices into the cells object 
-    #     where the i-th basis function is different from zero"""
-    #     self.check_index(i)
-    #     return (0, 1)
-
-    # def cell_span(self, i):
-    #     """ An array of indices containing the basis functions which are non zero on the i-th cell """
-    #     self.check_index(i)
-    #     return [0]
-
-    # def eval(self, c, x):
-    #     assert len(c) == self.n_dofs, \
-    #         'Incompatible vector. It should have length %. It has lenght %'.format(self.n_dofs, len(c))
-    #     # Find the cell where x lies:
-    #     y = 0*x
-    #     # TBD: make this function aware of locality
-    #     for i in xrange(self.n_dofs):
-    #         y += self.basis(i)(x)*c[i]
-    
-    # def element(self, c):
-    #     """  VectorSpace.element(c): a callable function, representing sum(c[i] * basis[i]), which exploits 
-    #     the locality of the basis functions """
-    #     assert len(c) == self.n_dofs, \
-    #         'Incompatible vector. It should have length %. It has lenght %'.format(self.n_dofs, len(c))
-    #     return lambda x: self.eval(c, x)
+        return np.asarray(non_zero_bases, np.int_)
