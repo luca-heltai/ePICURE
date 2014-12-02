@@ -15,6 +15,7 @@ class VectorSpace(object):
         self.n_dofs_per_end_point = 0
         self.n_cells = 1
         self.cells = np.array([a, b])
+        self.degree = 0
 
     def check_index(self, i):
         assert i< self.n_dofs, \
@@ -46,6 +47,7 @@ class VectorSpace(object):
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
             y += self.basis(i)(x)*c[i]
+        return y
     
     def element(self, c):
         """VectorSpace.element(c): a callable function, representing sum(c[i] *
@@ -82,6 +84,7 @@ class AffineVectorSpace(VectorSpace):
         self.b0 = b0
         self.a = a
         self.b = b
+        self.degree = vs.degree
 
     def reset(self, a=0.0, b=0.0):
         """Make the affine transformation on the new [a,b] interval."""
@@ -146,6 +149,7 @@ class IteratedVectorSpace(VectorSpace):
         self.cells = np.append(self.cells, [span[-1]])
         assert len(self.cells)-1 == self.n_cells, \
           "Internal error! {} != {}".format(len(self.cells)-1, self.n_cells)
+        self.degree = vs.degree
 
     def local_to_global(self, base, i):
         """Return global index of ith local dof on cell c"""

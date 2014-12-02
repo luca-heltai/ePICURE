@@ -19,6 +19,7 @@ class LagrangeVectorSpace(VectorSpace):
         self.n_cells = 1
         self.cells = np.array([qpoints[0], qpoints[-1]])
         self.qpoints = qpoints
+        self.degree = self.n_dofs-1
 
     def basis(self, i):
         self.check_index(i)
