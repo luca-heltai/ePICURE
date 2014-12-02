@@ -66,8 +66,7 @@ class BsplineVectorSpace(VectorSpace):
         n = 0
         for j in range(i+1):
             n += self.mults[j]
-        non_zero_bases = list()
-        for j in range(self.degree + 1):
-            non_zero_bases.append(n - self.degree - 1 + j)
-
+        
+        non_zero_bases = [n - self.degree - 1 + j for j in xrange(self.degree+1)]
+        
         return np.asarray(non_zero_bases, np.int_)
