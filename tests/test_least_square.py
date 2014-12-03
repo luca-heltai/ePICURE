@@ -1,8 +1,9 @@
+import numpy as np
 from utilities.least_square import *
 
 def test_least_square():
     vector_space = UniformLagrangeVectorSpace(4)
-    function = lambda x: sin(10*pi*x)
+    function = lambda x: np.sin(10*np.pi*x)
     points = np.array([0, 0.3, 1.0])
     works = True
     try:
@@ -21,7 +22,7 @@ def test_least_square():
     except:
         pass
     assert works, \
-           'Unexpected failure!'
+           'Unexpected failure! The number of points is equal to the dofs'
 
     points = np.array([0, 0.3, 0.6, 0.8, 1.0])
     works = False
@@ -31,4 +32,4 @@ def test_least_square():
     except:
         pass
     assert works, \
-           'Unexpected failure!'
+           'Unexpected failure! The number of points is greater than the dofs'

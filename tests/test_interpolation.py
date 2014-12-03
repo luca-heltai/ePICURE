@@ -1,8 +1,9 @@
+import numpy as np
 from utilities.interpolation import *
 
 def test_interpolation():
     vector_space = UniformLagrangeVectorSpace(3)
-    function = lambda x: sin(10*pi*x)
+    function = lambda x: np.sin(10*np.pi*x)
     points = np.array([0, 0.3, 1.0])
     c = interpolation(function, vector_space, points)
     works = True
@@ -10,7 +11,7 @@ def test_interpolation():
         s = 0
         for j in range(3):
             s += c[j]*vector_space.basis(j)(points[i])
-        if abs(s - funz(points[i])) > 1e-15:
+        if abs(s - function(points[i])) > 1e-15:
             works = False
             break
     assert works, \
@@ -24,7 +25,7 @@ def test_interpolation():
     except:
         pass
     assert works, \
-           'Expecting failure!'
+           'Expecting failure when the number of points is greater than the dofs!'
 
     points = np.array([0, 1.0])
     works = True
@@ -34,4 +35,4 @@ def test_interpolation():
     except:
         pass
     assert works, \
-           'Expecting failure!'
+           'Expecting failure when the number of points is less than the dofs!'
