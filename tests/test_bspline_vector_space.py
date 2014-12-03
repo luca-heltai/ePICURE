@@ -100,3 +100,47 @@ def test_cell_span():
     assert a.cell_span(3)[2] == 5
     assert a.cell_span(3)[3] == 6
 
+
+def test_basis_span():
+    a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.5,5.,6.,6.,6.,6.])
+    assert a.basis_span(0) == (0.0, 1.0)
+    assert a.basis_span(1) == (0.0, 2.5)
+    assert a.basis_span(2) == (0.0, 5.0)
+    assert a.basis_span(3) == (0.0, 6.0)
+    assert a.basis_span(4) == (1.0, 6.0)
+    assert a.basis_span(5) == (2.5, 6.0)
+    assert a.basis_span(6) == (5.0, 6.0)
+
+
+def test_find_span():
+    a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.5,5.,6.,6.,6.,6.])
+    assert a.find_span(0.) == 3
+    assert a.find_span(0.1) == 3
+    assert a.find_span(1.) == 3
+    assert a.find_span(2.4) == 4
+    assert a.find_span(2.5) == 4
+    assert a.find_span(2.6) == 5
+    assert a.find_span(6.) == 6
+
+    a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.,2.,2.,4.,5.,6.,6.,6.,6.])
+    assert a.find_span(0.) == 3
+    assert a.find_span(0.1) == 3
+    assert a.find_span(1.) == 3
+    assert a.find_span(1.4) == 4
+    assert a.find_span(2.) == 4
+    assert a.find_span(4.) == 7
+    assert a.find_span(5.9) == 9
+    assert a.find_span(6.) == 9
+
+def test_map_basis_cell():
+    a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.5,5.,6.,6.,6.,6.])
+    assert a.map_basis_cell(0, 3) == 0
+    assert a.map_basis_cell(2, 3) == 2
+    assert a.map_basis_cell(4, 5) == 2
+    assert a.map_basis_cell(4, 7) == 3
+
+    a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.,2.,2.,4.,5.,6.,6.,6.,6.])
+    assert a.map_basis_cell(0, 3) == 0
+    assert a.map_basis_cell(2, 3) == 2
+    assert a.map_basis_cell(4, 7) == 0
+    assert a.map_basis_cell(7, 8) == 2
