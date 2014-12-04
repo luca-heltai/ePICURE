@@ -1,8 +1,6 @@
 import numpy as np
-import sys
-from vector_space import VectorSpace
-sys.path.append("../utilities/")
-from _Bas import basisfuns
+from interfaces.vector_space import VectorSpace
+from utilities._Bas import basisfuns, dersbasisfuns
 
 class BsplineVectorSpace(VectorSpace):
     """A python interface used to describe *one dimensional Bspline basis
@@ -134,13 +132,15 @@ class BsplineVectorSpace(VectorSpace):
             self.knots_with_rep)[self.map_basis_cell(i, self.find_span(x))] if x >= t[0] and x <= t[1] else 0
 
 
-    def plot_basis_functions(self):
-        """Plot all the basis functions. Just for debugging purpose. It works also with C^-1 continuity."""
-        import matplotlib.pyplot as plt
-        x = np.linspace(self.knots_unique[0], self.knots_unique[-1], 1025)
-        for i in xrange(self.n_dofs):
-            y = list()
-            for j in x:
-                y.append( self.basis(i)(j) )
-            plt.plot(x, y)
-        plt.show()
+    def basis_der(self, i, d):
+        """The d-th derivative of the i-th basis function (a callable function)"""
+        self.check_index(i)
+        t = self.basis_span(i)
+        # If the point is outside the support of the i-th basis function it returns 0.
+        # We take the d-th row of the matrix returned by dersbasisfuns
+        return lambda x: dersbasisfuns(self.degree, self.knots_with_rep, x, self.find_span(x),
+            d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= t[0] and x <= t[1] else 0
+
+
+
+
