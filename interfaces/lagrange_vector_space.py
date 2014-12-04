@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.interpolate import lagrange
-from interfaces.vector_space import VectorSpace
+from vector_space import VectorSpace #!!!!!!!!!!!!!!!!!
 
 class LagrangeVectorSpace(VectorSpace):
     """A python interface used to describe *one dimensional lagrange basis functions
