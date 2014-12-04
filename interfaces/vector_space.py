@@ -43,20 +43,20 @@ class VectorSpace(object):
         assert len(c) == self.n_dofs, \
             'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        y = 0*x
+        y = 0*x[:,np.newaxis]*c[0]
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += self.basis(i)(x)*c[i]
+            y += self.basis(i)(x)[:,np.newaxis]*c[i]
         return y
     
     def eval_der(self, c, d, x):
         assert len(c) == self.n_dofs, \
             'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        y = 0*x
+        y = 0*x[:,np.newaxis]*c[0]
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += self.basis_der(i,d)(x)*c[i]
+            y += self.basis_der(i,d)(x)[:,np.newaxis]*[i]
         return y
     
     def element(self, c):
