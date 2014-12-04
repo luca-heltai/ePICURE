@@ -33,6 +33,9 @@ class Curve(object):
 	def get_vector_space(self):
 		return self.vector_space
 
+	def get_vector_space(self):
+		return self.vector_space
+
 	def get_curve_n_dofs(self):
 		return self.n_dofs
 
