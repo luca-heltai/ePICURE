@@ -37,10 +37,10 @@ class ArcLengthParametrizer(object):
 		self.reparametrization_LS_assembler()
 		print "Solving the system"
 		self.new_control_points = self.reparametrization_LS_solver()
-		print "Preparing the solution"
+		# print "Preparing the solution"
 		
-		new_cp = np.asmatrix(np.array([np.array([self.new_control_points[i*self.dim + j] for j in range(self.dim)]) for i in range(self.n_dofs)]))
-		return new_cp
+		# new_cp = np.asmatrix(np.array([np.array([self.new_control_points[i*self.dim + j] for j in range(self.dim)]) for i in range(self.n_dofs)]))
+		return self.new_control_points
 
     def compute_arclength(self):
 		"""This function compute the overall length of the curve. We choose to do this
@@ -64,7 +64,7 @@ class ArcLengthParametrizer(object):
 		the value of the original parameter for which the desired arclength is achieved.
 		We search over the array self.points_s for the closest arclength value to the desired 
 		sval."""
-		error = 1.
+		#error = 1.
 		index = np.argmin(np.abs(self.points_s[:,1] - sval))
 		return self.points_s[index,0]
 		# for i in range(0, self.points_s.shape[0]):
@@ -86,6 +86,7 @@ class ArcLengthParametrizer(object):
 			#rint tval
 			# The curve should have a value( or __call__ if prefered) method that we can query to know its value in space
 		self.point_ls[:,0:self.dim] = self.curve(tval)
+		self.rhsinit = self.curve(tval)
 		#self.point_ls[:,self.dim] = s_array[:,np.newaxis]
 		self.point_ls[:,self.dim] = tval[:,np.newaxis]
 			# In point_ls we store the value in space, the s_array and the tval obtained
@@ -96,22 +97,23 @@ class ArcLengthParametrizer(object):
 		# We want it to be rectangular because we are approximating its resilution so we search for something that solves the reparametrization in a 
 		# least square sense.
 		Bmatrixnumelem = self.dim * s_array.shape[0] * self.n_dofs * self.dim
-		self.matrixB = np.zeros(Bmatrixnumelem).reshape(self.dim * s_array.shape[0], self.n_dofs * self.dim)
-		self.rhsinit = np.zeros(self.dim * s_array.shape[0])
-		computation_matrix = interpolation_matrix(self.vector_space, tval)
-		
-		for i in range(0, s_array.shape[0]):
-			for j in range(0, self.n_dofs):
-				for d in range(0, self.dim):
-					self.matrixB[self.dim * i + d, j * self.dim + d] = computation_matrix[i,j]#self.vector_space.basis(j)(self.point_ls[i, self.dim])
+		#self.matrixB = np.zeros(Bmatrixnumelem).reshape(self.dim * s_array.shape[0], self.n_dofs * self.dim)
+		#self.rhsinit = np.zeros(self.dim * s_array.shape[0])
+		self.matrixB = interpolation_matrix(self.vector_space, tval)
 
-			for d in range(0, self.dim):
-				self.rhsinit[self.dim * i + d] = self.point_ls[i,d]
+		# for i in range(0, s_array.shape[0]):
+		# 	for j in range(0, self.n_dofs):
+		# 		for d in range(0, self.dim):
+		# 			self.matrixB[self.dim * i + d, j * self.dim + d] = computation_matrix[i,j]#self.vector_space.basis(j)(self.point_ls[i, self.dim])
+
+		# 	for d in range(0, self.dim):
+		# 		self.rhsinit[self.dim * i + d] = self.point_ls[i,d]
 
 
     def reparametrization_LS_solver(self):
 		"""In this method we solve the LS system assembled before. The result should be the new knot_vector that
 		will form the arclength reparametrized curve."""
 		res = np.linalg.lstsq(self.matrixB, self.rhsinit)
+		#print res[0]
 		return res[0]
 
