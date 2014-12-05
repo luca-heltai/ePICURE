@@ -102,7 +102,7 @@ class AffineVectorSpace(VectorSpace):
         self.b = b
         self.degree = vs.degree
 
-    def reset(self, a=0.0, b=0.0):
+    def reset(self, a=0.0, b=1.0):
         """Make the affine transformation on the new [a,b] interval."""
         a0 = self.a0
         b0 = self.b0
