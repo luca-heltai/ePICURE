@@ -24,7 +24,7 @@ install:
  
 # Run test
 script:
-  - nosetests --with-coverage --cover-package=ePICURE tests
+  - nosetests --with-coverage --cover-package=interfaces --cover-package=utilities tests
  
 # Calculate coverage
 after_success:
