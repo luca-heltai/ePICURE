@@ -132,6 +132,32 @@ def test_reparametrization():
 
 
 def test_known_parametrization():
+    R = 1
+    P = 1
+    toll = 1.e-6
+
+    n = 10
+    ii = np.linspace(0,1,n+1)
+    control_points_3d = np.asmatrix(np.zeros([n+1,3]))#[np.array([R*np.cos(5*i * np.pi / (n + 1)), R*np.sin(5*i * np.pi / (n + 1)), P * i]) for i in range(0, n+1)]
+    control_points_3d[:,0] = np.transpose(np.matrix([R*np.cos(5*i * np.pi / (n + 1))for i in ii]))
+    control_points_3d[:,1] = np.transpose(np.matrix([R*np.sin(5*i * np.pi / (n + 1))for i in ii]))
+    control_points_3d[:,2] = np.transpose(np.matrix([P*i for i in range(n+1)]))
+    #control_points_3d[3,:] += 32
+    #print control_points_3d[0]
+    vsl = AffineVectorSpace(UniformLagrangeVectorSpace(n+1),0,1)
+    arky = ArcLengthParametrizer(vsl, control_points_3d)
+    new_control_points_3d = arky.reparametrize()
+
+    new_arky = ArcLengthParametrizer(vsl, new_control_points_3d)
+    new_new_control_points_3d = arky.reparametrize()
+    tt = np.linspace(0, 1, 128)
+
+    new_new_vals = vsl.element(new_new_control_points_3d)(tt)
+    #print vals
+    new_vals = vsl.element(new_control_points_3d)(tt)
+    #print vals.shape, new_vals.shape
+    assert np.amax(np.abs(new_new_vals-new_vals)) < toll
+
     assert True
 
 
