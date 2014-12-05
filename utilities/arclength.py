@@ -36,7 +36,7 @@ class ArcLengthParametrizer(object):
 		print "Assembling the LS system"
 		self.reparametrization_LS_assembler()
 		print "Solving the system"
-		self.new_control_points = self.reparametrization_LS_solver()
+		self.new_control_points = np.asmatrix(self.reparametrization_LS_solver())
 		# print "Preparing the solution"
 		
 		# new_cp = np.asmatrix(np.array([np.array([self.new_control_points[i*self.dim + j] for j in range(self.dim)]) for i in range(self.n_dofs)]))
@@ -81,6 +81,7 @@ class ArcLengthParametrizer(object):
 		#self.point_ls = list()
 		self.point_ls = np.asmatrix(np.zeros([s_array.shape[0],self.dim + 2]))
 		tval = np.zeros(s_array.shape[0])
+		sval = np.linspace(0,1,s_array.shape[0])
 		for i in range(0, s_array.shape[0]):
 			tval[i] = self.find_s(s_array[i])
 			#rint tval
@@ -96,10 +97,10 @@ class ArcLengthParametrizer(object):
 		# We compute the number of elements in the system rectangular matrix(Bmatrix), it will have dim*s_array.shape[0] rows and dim*nknot columns.
 		# We want it to be rectangular because we are approximating its resilution so we search for something that solves the reparametrization in a 
 		# least square sense.
-		Bmatrixnumelem = self.dim * s_array.shape[0] * self.n_dofs * self.dim
+		#Bmatrixnumelem = self.dim * s_array.shape[0] * self.n_dofs * self.dim
 		#self.matrixB = np.zeros(Bmatrixnumelem).reshape(self.dim * s_array.shape[0], self.n_dofs * self.dim)
 		#self.rhsinit = np.zeros(self.dim * s_array.shape[0])
-		self.matrixB = interpolation_matrix(self.vector_space, tval)
+		self.matrixB = interpolation_matrix(self.vector_space, sval)
 
 		# for i in range(0, s_array.shape[0]):
 		# 	for j in range(0, self.n_dofs):
