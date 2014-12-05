@@ -20,7 +20,7 @@ class ArcLengthParametrizer(object):
 		curve to be composed by a vector space and a control point array.
 		"""
 		self.init_control_points = np.asmatrix(init_control_points)
-		self.vector_space = vector_space
+		self.vector_space = AffineVectorSpace(vector_space)
 		self.arcfactor = arcfactor
 		self.n_dofs = self.vector_space.n_dofs
 		self.dim = self.init_control_points[0].shape[1]
@@ -99,6 +99,7 @@ class ArcLengthParametrizer(object):
 		self.matrixB = np.zeros(Bmatrixnumelem).reshape(self.dim * s_array.shape[0], self.n_dofs * self.dim)
 		self.rhsinit = np.zeros(self.dim * s_array.shape[0])
 		computation_matrix = interpolation_matrix(self.vector_space, tval)
+		
 		for i in range(0, s_array.shape[0]):
 			for j in range(0, self.n_dofs):
 				for d in range(0, self.dim):
