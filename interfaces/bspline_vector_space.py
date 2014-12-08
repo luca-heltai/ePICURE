@@ -13,12 +13,6 @@ class BsplineVectorSpace(VectorSpace):
         assert degree >= 0
         assert len(knots) > 1
         assert knots[0] != knots[-1]
-
-        # # Check if the knot vector is actually open.
-        # if degree > 0:
-        #     for i in xrange(1, degree+1):
-        #         assert knots[0] == knots[i]
-        #         assert knots[-1] == knots[-i]
         
         self.degree = degree
         self.knots_with_rep = np.asarray(knots, np.float)
@@ -93,7 +87,7 @@ class BsplineVectorSpace(VectorSpace):
                 break
 
         return (j, k)
-        #return (self.knots_with_rep[i], self.knots_with_rep[i + self.degree + 1])
+
 
     def find_span(self, parametric_point):
         """Return the index of the knot span in which the parametric point is contained.
