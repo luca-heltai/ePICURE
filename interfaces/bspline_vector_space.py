@@ -123,23 +123,58 @@ class BsplineVectorSpace(VectorSpace):
                 return j
 
 
+    def eval(self, i, x):
+        t = self.basis_span(i)
+        # if x is a scalar then evaluate in the single point, else iterate
+        if type(x) == float or type(x) == int:
+            if x >= t[0] and x <= t[1]:
+                return basisfuns(self.find_span(x), self.degree, x, 
+                    self.knots_with_rep)[self.map_basis_cell(i, self.find_span(x))]
+            else:
+                return 0
+        else:
+            y = list()
+            for j in x:
+                if j >= t[0] and j <= t[1]:
+                    y.append( basisfuns(self.find_span(j), self.degree, j, 
+                        self.knots_with_rep)[self.map_basis_cell(i, self.find_span(j))] )
+                else:
+                    y.append(0)
+            return np.asarray(y, np.float)
+
+
+    def eval_der(self, i, d, x):
+        t = self.basis_span(i)
+        # if x is a scalar then evaluate in the single point, else iterate
+        if type(x) == float or type(x) == int:
+            if x >= t[0] and x <= t[1]:
+                return dersbasisfuns(self.degree, self.knots_with_rep, x, self.find_span(x),
+                    d)[d][self.map_basis_cell(i, self.find_span(x))]
+            else:
+                return 0
+        else:
+            y = list()
+            for j in x:
+                if j >= t[0] and j <= t[1]:
+                    y.append( dersbasisfuns(self.degree, self.knots_with_rep, j, self.find_span(j),
+                        d)[d][self.map_basis_cell(i, self.find_span(j))] )
+                else:
+                    y.append(0)
+        return np.asarray(y, np.float)
+
+
     def basis(self, i):
         """The ith basis function (a callable function)"""
         self.check_index(i)
-        t = self.basis_span(i)
-        # If the point is outside the support of the i-th basis function it returns 0.
-        return lambda x: basisfuns(self.find_span(x), self.degree, x, 
-            self.knots_with_rep)[self.map_basis_cell(i, self.find_span(x))] if x >= t[0] and x <= t[1] else 0
+        return lambda x: self.eval(i, x)
 
 
     def basis_der(self, i, d):
         """The d-th derivative of the i-th basis function (a callable function)"""
         self.check_index(i)
-        t = self.basis_span(i)
         # If the point is outside the support of the i-th basis function it returns 0.
         # We take the d-th row of the matrix returned by dersbasisfuns
-        return lambda x: dersbasisfuns(self.degree, self.knots_with_rep, x, self.find_span(x),
-            d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= t[0] and x <= t[1] else 0
+        return lambda x: self.eval_der(i, d, x)
 
 
 
