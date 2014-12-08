@@ -14,11 +14,11 @@ class BsplineVectorSpace(VectorSpace):
         assert len(knots) > 1
         assert knots[0] != knots[-1]
 
-        # Check if the knot vector is actually open.
-        if degree > 0:
-            for i in xrange(1, degree+1):
-                assert knots[0] == knots[i]
-                assert knots[-1] == knots[-i]
+        # # Check if the knot vector is actually open.
+        # if degree > 0:
+        #     for i in xrange(1, degree+1):
+        #         assert knots[0] == knots[i]
+        #         assert knots[-1] == knots[-i]
         
         self.degree = degree
         self.knots_with_rep = np.asarray(knots, np.float)
@@ -27,8 +27,8 @@ class BsplineVectorSpace(VectorSpace):
         self.mults = self.compute_mults(self.knots_with_rep)
 
         assert ( self.n_knots - (self.degree + 1) ) > 0
-        self.n_dofs = self.n_knots - (self.degree + 1)
-        # self.n_dofs = self.compute_n_dofs(self.knots_unique, self.mults, self.degree)
+        #self.n_dofs = self.n_knots - (self.degree + 1)
+        self.n_dofs = self.compute_n_dofs(self.knots_unique, self.mults, self.degree)
 
         self.n_cells = len(self.knots_unique) - 1
         self.n_dofs_per_end_point = 1
@@ -85,8 +85,15 @@ class BsplineVectorSpace(VectorSpace):
         degree+2 knots."""
         self.check_index(i)
 
-        return (self.knots_with_rep[i], self.knots_with_rep[i + self.degree + 1])
+        for j in xrange(len(self.cells)):
+            if self.knots_with_rep[i] == self.cells[j]:
+                break
+        for k in xrange(len(self.cells)):
+            if self.knots_with_rep[i + self.degree + 1] == self.cells[k]:
+                break
 
+        return (j, k)
+        #return (self.knots_with_rep[i], self.knots_with_rep[i + self.degree + 1])
 
     def find_span(self, parametric_point):
         """Return the index of the knot span in which the parametric point is contained.
@@ -96,7 +103,7 @@ class BsplineVectorSpace(VectorSpace):
         assert parametric_point >= self.knots_unique[0]
         assert parametric_point <= self.knots_unique[-1]
 
-        i = self.degree
+        i = self.mults[0]-1
         while parametric_point > self.knots_with_rep[i+1]:
             i += 1
         return i
@@ -123,59 +130,25 @@ class BsplineVectorSpace(VectorSpace):
                 return j
 
 
-    def eval(self, i, x):
-        t = self.basis_span(i)
-        # if x is a scalar then evaluate in the single point, else iterate
-        if type(x) == float or type(x) == int:
-            if x >= t[0] and x <= t[1]:
-                return basisfuns(self.find_span(x), self.degree, x, 
-                    self.knots_with_rep)[self.map_basis_cell(i, self.find_span(x))]
-            else:
-                return 0
-        else:
-            y = list()
-            for j in x:
-                if j >= t[0] and j <= t[1]:
-                    y.append( basisfuns(self.find_span(j), self.degree, j, 
-                        self.knots_with_rep)[self.map_basis_cell(i, self.find_span(j))] )
-                else:
-                    y.append(0)
-            return np.asarray(y, np.float)
-
-
-    def eval_der(self, i, d, x):
-        t = self.basis_span(i)
-        # if x is a scalar then evaluate in the single point, else iterate
-        if type(x) == float or type(x) == int:
-            if x >= t[0] and x <= t[1]:
-                return dersbasisfuns(self.degree, self.knots_with_rep, x, self.find_span(x),
-                    d)[d][self.map_basis_cell(i, self.find_span(x))]
-            else:
-                return 0
-        else:
-            y = list()
-            for j in x:
-                if j >= t[0] and j <= t[1]:
-                    y.append( dersbasisfuns(self.degree, self.knots_with_rep, j, self.find_span(j),
-                        d)[d][self.map_basis_cell(i, self.find_span(j))] )
-                else:
-                    y.append(0)
-        return np.asarray(y, np.float)
-
-
     def basis(self, i):
         """The ith basis function (a callable function)"""
         self.check_index(i)
-        return lambda x: self.eval(i, x)
+        t = self.basis_span(i)
+        # If the point is outside the support of the i-th basis function it returns 0.
+        g = lambda x: basisfuns(self.find_span(x), self.degree, x, 
+            self.knots_with_rep)[self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        return np.frompyfunc(g, 1, 1)
 
 
     def basis_der(self, i, d):
         """The d-th derivative of the i-th basis function (a callable function)"""
         self.check_index(i)
+        t = self.basis_span(i)
         # If the point is outside the support of the i-th basis function it returns 0.
         # We take the d-th row of the matrix returned by dersbasisfuns
-        return lambda x: self.eval_der(i, d, x)
-
+        g = lambda x: dersbasisfuns(self.degree, self.knots_with_rep, x, self.find_span(x),
+            d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        return np.frompyfunc(g, 1, 1)
 
 
 

@@ -103,13 +103,13 @@ def test_cell_span():
 
 def test_basis_span():
     a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.5,5.,6.,6.,6.,6.])
-    assert a.basis_span(0) == (0.0, 1.0)
-    assert a.basis_span(1) == (0.0, 2.5)
-    assert a.basis_span(2) == (0.0, 5.0)
-    assert a.basis_span(3) == (0.0, 6.0)
-    assert a.basis_span(4) == (1.0, 6.0)
-    assert a.basis_span(5) == (2.5, 6.0)
-    assert a.basis_span(6) == (5.0, 6.0)
+    assert a.basis_span(0) == (0, 1)
+    assert a.basis_span(1) == (0, 2)
+    assert a.basis_span(2) == (0, 3)
+    assert a.basis_span(3) == (0, 4)
+    assert a.basis_span(4) == (1, 4)
+    assert a.basis_span(5) == (2, 4)
+    assert a.basis_span(6) == (3, 4)
 
 
 def test_find_span():
@@ -152,9 +152,6 @@ def test_basis():
     assert a.basis(0)(0) == 1.
     assert a.basis(0)(1) == 0.
     assert a.basis(0)(2) == 0.
-    #assert a.basis(2)(2) - 0.513333333333 < np.power(10, -1)
-    assert a.basis(4)(3) - 0.25306122449 < np.power(2, -20)
-    #assert a.basis(5)(3) - 0.00408163265306 < np.power(10, -1)
     assert a.basis(5)(6) == 0.
     assert a.basis(6)(6) == 1.
 
