@@ -59,6 +59,16 @@ class BsplineVectorSpace(VectorSpace):
 
 
     def cell_span(self, i):
+        """An array of indices containing the basis functions which are non zero on
+        the i-th cell.  If the knot span is closed, there are always
+        degree+1 non zero basis functions. In other cases, the first and last cell
+        may have a different number. 
+        """
+        list_of_dofs = self.internal_cell_span(i)
+        return  [ i for i in list_of_dofs if i in range(0, self.n_dofs) ]
+
+
+    def internal_cell_span(self, i):
         """ An array of indices containing the basis functions which are non zero on the i-th cell.
         They always are degree + 1."""
         assert i >= 0
@@ -71,7 +81,6 @@ class BsplineVectorSpace(VectorSpace):
         non_zero_bases = [n - self.degree - 1 + j for j in xrange(self.degree+1)]
         
         return np.asarray(non_zero_bases, np.int_)
-
 
     def basis_span(self, i):
         """Return a tuple indicating the start and end indices into the cells object where
@@ -118,7 +127,7 @@ class BsplineVectorSpace(VectorSpace):
         for j in xrange(n+1):
             summation += self.mults[j]-1
 
-        non_zero_bases = self.cell_span(knot_interval - summation)
+        non_zero_bases = self.internal_cell_span(knot_interval - summation)
         for j in xrange(self.degree+1):
             if non_zero_bases[j] == i:
                 return j
