@@ -13,12 +13,6 @@ class BsplineVectorSpace(VectorSpace):
         assert degree >= 0
         assert len(knots) > 1
         assert knots[0] != knots[-1]
-
-        # Check if the knot vector is actually open.
-        if degree > 0:
-            for i in xrange(1, degree+1):
-                assert knots[0] == knots[i]
-                assert knots[-1] == knots[-i]
         
         self.degree = degree
         self.knots_with_rep = np.asarray(knots, np.float)
@@ -27,8 +21,8 @@ class BsplineVectorSpace(VectorSpace):
         self.mults = self.compute_mults(self.knots_with_rep)
 
         assert ( self.n_knots - (self.degree + 1) ) > 0
-        self.n_dofs = self.n_knots - (self.degree + 1)
-        # self.n_dofs = self.compute_n_dofs(self.knots_unique, self.mults, self.degree)
+        #self.n_dofs = self.n_knots - (self.degree + 1)
+        self.n_dofs = self.compute_n_dofs(self.knots_unique, self.mults, self.degree)
 
         self.n_cells = len(self.knots_unique) - 1
         self.n_dofs_per_end_point = 1
@@ -65,6 +59,16 @@ class BsplineVectorSpace(VectorSpace):
 
 
     def cell_span(self, i):
+        """An array of indices containing the basis functions which are non zero on
+        the i-th cell.  If the knot span is closed, there are always
+        degree+1 non zero basis functions. In other cases, the first and last cell
+        may have a different number. 
+        """
+        list_of_dofs = self.internal_cell_span(i)
+        return  [ i for i in list_of_dofs if i in range(0, self.n_dofs) ]
+
+
+    def internal_cell_span(self, i):
         """ An array of indices containing the basis functions which are non zero on the i-th cell.
         They always are degree + 1."""
         assert i >= 0
@@ -78,14 +82,20 @@ class BsplineVectorSpace(VectorSpace):
         
         return np.asarray(non_zero_bases, np.int_)
 
-
     def basis_span(self, i):
         """Return a tuple indicating the start and end indices into the cells object where
         the i-th basis function is different from zero. Remember that a basis always spans
         degree+2 knots."""
         self.check_index(i)
 
-        return (self.knots_with_rep[i], self.knots_with_rep[i + self.degree + 1])
+        for j in xrange(len(self.cells)):
+            if self.knots_with_rep[i] == self.cells[j]:
+                break
+        for k in xrange(len(self.cells)):
+            if self.knots_with_rep[i + self.degree + 1] == self.cells[k]:
+                break
+
+        return (j, k)
 
 
     def find_span(self, parametric_point):
@@ -96,7 +106,7 @@ class BsplineVectorSpace(VectorSpace):
         assert parametric_point >= self.knots_unique[0]
         assert parametric_point <= self.knots_unique[-1]
 
-        i = self.degree
+        i = self.mults[0]-1
         while parametric_point > self.knots_with_rep[i+1]:
             i += 1
         return i
@@ -117,7 +127,7 @@ class BsplineVectorSpace(VectorSpace):
         for j in xrange(n+1):
             summation += self.mults[j]-1
 
-        non_zero_bases = self.cell_span(knot_interval - summation)
+        non_zero_bases = self.internal_cell_span(knot_interval - summation)
         for j in xrange(self.degree+1):
             if non_zero_bases[j] == i:
                 return j
@@ -128,8 +138,9 @@ class BsplineVectorSpace(VectorSpace):
         self.check_index(i)
         t = self.basis_span(i)
         # If the point is outside the support of the i-th basis function it returns 0.
-        return lambda x: basisfuns(self.find_span(x), self.degree, x, 
-            self.knots_with_rep)[self.map_basis_cell(i, self.find_span(x))] if x >= t[0] and x <= t[1] else 0
+        g = lambda x: basisfuns(self.find_span(x), self.degree, x, 
+            self.knots_with_rep)[self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        return np.frompyfunc(g, 1, 1)
 
 
     def basis_der(self, i, d):
@@ -138,9 +149,9 @@ class BsplineVectorSpace(VectorSpace):
         t = self.basis_span(i)
         # If the point is outside the support of the i-th basis function it returns 0.
         # We take the d-th row of the matrix returned by dersbasisfuns
-        return lambda x: dersbasisfuns(self.degree, self.knots_with_rep, x, self.find_span(x),
-            d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= t[0] and x <= t[1] else 0
-
+        g = lambda x: dersbasisfuns(self.degree, self.knots_with_rep, x, self.find_span(x),
+            d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        return np.frompyfunc(g, 1, 1)
 
 
 
