@@ -44,21 +44,21 @@ class VectorSpace(object):
             'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
         y = np.zeros(np.shape(c)[1::]+np.shape(x))
-		# TBD: make this function aware of locality
-		for i in xrange(self.n_dofs):
-			y += c[i]*self.basis(i)(x)
+        # TBD: make this function aware of locality
+        for i in xrange(self.n_dofs):
+            y += c[i]*self.basis(i)(x)
         return y
     
     def eval_der(self, c, d, x):
         assert len(c) == self.n_dofs, \
-            'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
+          'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
         y = np.zeros(np.shape(c)[1::]+np.shape(x))
-		# TBD: make this function aware of locality
-		for i in xrange(self.n_dofs):
-			y += c[i]*self.basis_der(i,d)(x)
+        # TBD: make this function aware of locality
+        for i in xrange(self.n_dofs):
+            y += c[i]*self.basis_der(i,d)(x)
         return y
-    
+        
     def element(self, c):
         """VectorSpace.element(c): a callable function, representing sum(c[i] *
         basis[i]), which exploits the locality of the basis functions
@@ -199,7 +199,7 @@ class IteratedVectorSpace(VectorSpace):
         self.check_index(i)
         pairs = self.global_to_local(i)
         x = np.squeeze(xx)
-		y = np.squeeze(np.array(x*0))
+        y = np.squeeze(np.array(x*0))
         span = self.span
         for p in pairs:
             a = span[p[0]]
@@ -215,7 +215,7 @@ class IteratedVectorSpace(VectorSpace):
         self.check_index(i)
         pairs = self.global_to_local(i)
         x = np.squeeze(xx)
-		y = np.squeeze(np.array(x*0))
+        y = np.squeeze(np.array(x*0))
         span = self.span
         for p in pairs:
             a = span[p[0]]
