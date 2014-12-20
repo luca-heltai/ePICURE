@@ -56,7 +56,7 @@ class VectorSpace(object):
         y = 0*x[:,np.newaxis]*c[0]
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += self.basis_der(i,d)(x)[:,np.newaxis]*[i]
+            y += self.basis_der(i,d)(x)[:,np.newaxis]*c[i]
         return y
     
     def element(self, c):
