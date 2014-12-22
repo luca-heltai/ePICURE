@@ -23,11 +23,11 @@ class VectorSpace(object):
 
     def basis(self, i):
         self.check_index(i)
-        return lambda x: 1.0
+        return lambda x: np.ones(np.shape(x))
 
     def basis_der(self, i, d):
         self.check_index(i)
-        return lambda x: 0.0
+        return lambda x: np.zeros(np.shape(x))
 
     def basis_span(self, i):
         """ VectorSpace.basis_span(i): a tuple indicating the start and end indices into the cells object where the i-th basis function is different from zero"""
@@ -43,20 +43,22 @@ class VectorSpace(object):
         assert len(c) == self.n_dofs, \
             'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        y = np.zeros(np.shape(c)[1::]+np.shape(x))
+        sy = np.shape(c[0])+np.shape(x)
+        y = np.zeros(sy)
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += c[i]*self.basis(i)(x)
+            y += np.outer(c[i], self.basis(i)(x)).reshape(sy)
         return y
     
     def eval_der(self, c, d, x):
         assert len(c) == self.n_dofs, \
           'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        y = np.zeros(np.shape(c)[1::]+np.shape(x))
+        sy = np.shape(c[0])+np.shape(x)
+        y = np.zeros(sy)
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += c[i]*self.basis_der(i,d)(x)
+            y += np.outer(c[i], self.basis(i)(x)).reshape(sy)
         return y
         
     def element(self, c):
