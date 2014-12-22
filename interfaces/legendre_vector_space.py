@@ -17,6 +17,6 @@ class LegendreVectorSpace(LagrangeVectorSpace):
                          Careful: weak formulation needs weights.'
          assert (n > 2), 'Polynomial degree too low for Legendre polynomials.\
                          Use linear Lagrange instead.'
-         Jroots[1:-1] = 0.5*(scipy.special.j_roots(n, alpha, beta)[0]+1)
+         Jroots[1:-1] = 0.5*(scipy.special.j_roots(n-2, alpha, beta)[0]+1)
          Jroots[-1] = 1.
          return Jroots
