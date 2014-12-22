@@ -11,7 +11,7 @@ def test_continuous_legendre_interface():
             assert False, 'Expecting Failure!'
         except:
             pass
-        xi = np.linspace(0,1,n)
+        xi = vector_space.collocationJacobi(0,0,n)
         for i in xrange(n):
             assert vector_space.basis(i,xi[i]) == 1
 
