@@ -22,6 +22,8 @@ class LegendreVectorSpace(LagrangeVectorSpace):
          Jroots[-1] = 1.
          return Jroots
 
+
+''' commented out GP, 12.22.14
 class DiscontinuousLegendreVectorSpace(LagrangeVectorSpace):
     """A python interface used to describe *one dimensional lagrange basis functions
     on n legendre collocation points using Gauss-Lobatto nodes*
@@ -39,3 +41,4 @@ class DiscontinuousLegendreVectorSpace(LagrangeVectorSpace):
          # Jacobi polynomials are defined on (-1,1): rescale to (0,1)
          Jroots = 0.5*(scipy.special.j_roots(n, alpha, beta)[0]+1)
          return Jroots
+'''
