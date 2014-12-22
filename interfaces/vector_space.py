@@ -58,7 +58,7 @@ class VectorSpace(object):
         y = np.zeros(sy)
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += np.outer(c[i], self.basis(i)(x)).reshape(sy)
+            y += np.outer(c[i], self.basis_der(i,d)(x)).reshape(sy)
         return y
         
     def element(self, c):
