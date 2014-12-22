@@ -14,10 +14,10 @@ def test_continuous_legendre_interface():
             pass
         xi = vector_space.collocationJacobi(0,0,n)
         for i in xrange(n):
-            assert vector_space.basis(i,xi[i]) == 1
+            assert vector_space.basis(i)(xi[i]) == 1
 
         try:
-            vector_space.basis(0,1.2)
+            vector_space.basis(0)(1.2)
             assert False, 'Expecting Failure!'
         except:
             pass
@@ -27,7 +27,7 @@ def test_continuous_legendre_interface():
                 xi = np.linspace(0,1,2**8)
                 f1 = plt.figure()
                 for i in xrange(n):
-                    plt.plot(xi,[vector_space.basis(i,j) for j in xi],'-')
+                    plt.plot(xi,[vector_space.basis(i)(j) for j in xi],'-')
                 plt.plot(vector_space.collocationJacobi(0,0,n),np.zeros(n),'ro')
                 plt.show()
 
