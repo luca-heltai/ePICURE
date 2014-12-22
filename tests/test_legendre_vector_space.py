@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 from interfaces.legendre_vector_space import *
 
 def test_continuous_legendre_interface():
-        vector_space = LegendreVectorSpace(8)
+        n = 8
+        vector_space = LegendreVectorSpace(n)
         assert vector_space.n_dofs == n
         assert vector_space.n_cells == n
         try:
