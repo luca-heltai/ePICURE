@@ -32,6 +32,7 @@ def test_continuous_legendre_interface():
                 plt.plot(vector_space.collocationJacobi(0,0,n),np.zeros(n),'ro')
                 plt.show()
 
+''' not needed as of 22.12.14, GP
 def test_discontinuous_legendre_interface():
         n = 8
         vector_space = DiscontinuousLegendreVectorSpace(n)
@@ -52,3 +53,4 @@ def test_discontinuous_legendre_interface():
             assert False, 'Expecting Failure!'
         except:
             pass
+'''
