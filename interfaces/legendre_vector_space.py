@@ -35,8 +35,7 @@ class DiscontinuousLegendreVectorSpace(LagrangeVectorSpace):
          Jroots = np.zeros(n)
          assert (alpha == 0 and beta == 0), 'Using non-Legendre Jacobi polynomials. \
                          Careful: weak formulation needs weights.'
-         assert (n > 2), 'Polynomial degree too low for Legendre polynomials.\
-                         Use linear Lagrange instead.'
+         assert (n > 0), 'At least one collocation point must be provided.'
          # Jacobi polynomials are defined on (-1,1): rescale to (0,1)
          Jroots = 0.5*(scipy.special.j_roots(n, alpha, beta)[0]+1)
          return Jroots
