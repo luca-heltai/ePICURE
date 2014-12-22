@@ -15,7 +15,7 @@ def test_continuous_legendre_interface():
         xi = vector_space.collocationJacobi(0,0,n)
         eps = 1.e-11
         for i in xrange(n):
-            assert vector_space.basis(i)(xi[i] - 1.) < eps
+            assert vector_space.basis(i)(xi[i]) - 1. < eps
 
         try:
             vector_space.basis(0)(1.2)
@@ -52,6 +52,3 @@ def test_discontinuous_legendre_interface():
             assert False, 'Expecting Failure!'
         except:
             pass
-
-test_continuous_legendre_interface()
-test_discontinuous_legendre_interface()
