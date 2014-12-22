@@ -43,22 +43,22 @@ class VectorSpace(object):
         assert len(c) == self.n_dofs, \
             'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        y = 0*x[:,np.newaxis]*c[0]
+        y = np.zeros(np.shape(c)[1::]+np.shape(x))
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += self.basis(i)(x)[:,np.newaxis]*c[i]
+            y += c[i]*self.basis(i)(x)
         return y
     
     def eval_der(self, c, d, x):
         assert len(c) == self.n_dofs, \
-            'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
+          'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        y = 0*x[:,np.newaxis]*c[0]
+        y = np.zeros(np.shape(c)[1::]+np.shape(x))
         # TBD: make this function aware of locality
         for i in xrange(self.n_dofs):
-            y += self.basis_der(i,d)(x)[:,np.newaxis]*[i]
+            y += c[i]*self.basis_der(i,d)(x)
         return y
-    
+        
     def element(self, c):
         """VectorSpace.element(c): a callable function, representing sum(c[i] *
         basis[i]), which exploits the locality of the basis functions
@@ -195,32 +195,34 @@ class IteratedVectorSpace(VectorSpace):
             ret += [(b,j)]
         return ret
 
-    def eval_basis(self, i, x):
+    def eval_basis(self, i, xx):
         self.check_index(i)
         pairs = self.global_to_local(i)
-        y = x*0
+        x = np.squeeze(xx)
+        y = np.squeeze(np.array(x*0))
         span = self.span
         for p in pairs:
             a = span[p[0]]
             b = span[p[0]+1]
             vs = self.vs
             vs.reset(a, b)
-            ids = (a<=x) & (x<=b)
+            ids = np.array( (a<=x) & (x<=b) )
             y[ids] = vs.basis(p[1])(x[ids])
         return y
             
             
-    def eval_basis_der(self, i, d, x):
+    def eval_basis_der(self, i, d, xx):
         self.check_index(i)
         pairs = self.global_to_local(i)
-        y = x*0
+        x = np.squeeze(xx)
+        y = np.squeeze(np.array(x*0))
         span = self.span
         for p in pairs:
             a = span[p[0]]
             b = span[p[0]+1]
             vs = self.vs
             vs.reset(a, b)
-            ids = (a<=x) & (x<=b)
+            ids = np.array( (a<=x) & (x<=b) )
             y[ids] = vs.basis_der(p[1], d)(x[ids])
         return y
     
