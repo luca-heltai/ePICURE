@@ -44,9 +44,9 @@ def test_discontinuous_legendre_interface():
         except:
             pass
         xi = vector_space.collocationJacobi(0,0,n)
-        eps = 1.e-11
+        eps = 1e-11
         for i in xrange(n):
-            assert vector_space.basis(i)(xi[i] - 1.) < eps
+		assert abs(vector_space.basis(i)(xi[i]) - 1.) < eps
 
         try:
             vector_space.basis(0)(1.2)
