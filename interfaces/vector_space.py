@@ -136,22 +136,22 @@ class AffineVectorSpace(VectorSpace):
         self.a = a
         self.b = b
         self.J = (b-a)/(b0-a0)
-        self.cells = (self.vs.cells-a0)/(b0-a0)*(b-a) + a
+        self.cells = (self.vs.cells-a0)*self.J + a
         
     def pull_back(self, x):
         """Transform x from [a,b] to [a0, b0]"""
         return (x-self.a)/self.J+self.a0
         
-    def push_forward(self, x):
+    def push_forward(self, x0):
         """Transform x from [a0,b0] to [a, b]"""
-        return (x-self.a0)*self.J+self.a
+        return (x0-self.a0)*self.J+self.a
     
     def basis(self, i):
         return lambda x: self.vs.basis(i)(self.pull_back(x))
 
     def basis_der(self, i, d):
-        return lambda x: self.vs.basis_der(i,d)(self.pull_back(x))/self.J
-
+        return lambda x: self.vs.basis_der(i,d)(self.pull_back(x))/(self.J**d)
+ 
     def basis_span(self, i):
         """VectorSpace.basis_span(i): a tuple indicating the start and end indices
         into the cells object where the i-th basis function is different from
