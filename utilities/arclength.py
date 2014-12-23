@@ -31,7 +31,8 @@ class ArcLengthParametrizer(object):
 		if(len(self.orig_shape) > 2):
 			print "We will interpret wathever there is between first and last indeces of init_control_points shape as a list among which reparametrize"
 			self.param_list = np.array(self.orig_shape[1:-1])
-			self.param_tot = np.sum(self.param_list)
+			self.param_tot = np.prod(self.param_list)
+			print self.param_tot, self.param_list
 			self.all_init_control_points = self.all_init_control_points.reshape((self.orig_shape[0],self.param_tot,self.orig_shape[-1]))
 			self.all_new_control_points = self.all_new_control_points.reshape((self.orig_shape[0],self.param_tot,self.orig_shape[-1]))
 		else:
@@ -46,7 +47,6 @@ class ArcLengthParametrizer(object):
 		"""This function compute the reparametrization. It queries the LS_assembler and LS_solver to compute
 		the new knot vector that you can use to build an arclength reparametrized curve. """
 		print "Starting the reparametrization"
-		#print self.param_tot
 		if(self.param_tot != 0):
 			for i in range(self.param_tot):
 				self.init_control_points = np.squeeze(self.all_init_control_points[:,i,:])
@@ -59,7 +59,6 @@ class ArcLengthParametrizer(object):
 				self.all_new_control_points[:,i,:] = self.new_control_points
 			self.all_new_control_points = self.all_new_control_points.reshape(self.orig_shape)
 		else:
-			#print "mamam"
 			self.init_control_points = self.all_init_control_points
 			self.compute_arclength()
 			print "Assembling the LS system"
