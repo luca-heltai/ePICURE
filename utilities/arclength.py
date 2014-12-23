@@ -25,7 +25,9 @@ class ArcLengthParametrizer(object):
 		self.n_dofs = self.vector_space.n_dofs
 		self.dim = self.init_control_points[0].shape[1]
 		self.new_control_points = np.zeros(self.n_dofs * self.dim)
+		print self.init_control_points.shape
 		self.curve = self.vector_space.element(self.init_control_points)
+		print np.squeeze(self.curve(np.array([0.2,0.5]))).shape, np.array([0.2,0.5]).shape
 		#self.curve_der = self.vector_space.element_der(self.init_control_points,1)
 
     def reparametrize(self):		
@@ -52,9 +54,15 @@ class ArcLengthParametrizer(object):
 								 np.zeros(self.arcfactor * self.arcfactor * self.n_dofs)])
 		self.points_s = self.points_s.transpose()
 		self.points_s[0,1] = 0.
-		all_points = self.curve(np.array(self.points_s[:,0]))
+		all_points_trial = self.curve(np.array(self.points_s[:,0]))
+		print  np.array(self.points_s[:,0]).shape, all_points_trial.shape
+
+		all_points = np.asmatrix(np.squeeze(self.curve(np.array(self.points_s[:,0])))).transpose()
+		#all_points = all_points.transpose()
+		#print all_points.shape#, np.squeeze(all_points).shape, np.array(self.points_s[:,0]).shape
 		all_points_diff = np.diff(all_points,1,0);
 		#print all_points_diff.shape, all_points.shape
+		#print self.points_s.shape, all_points_diff.shape
 		for i in range(1, self.points_s.shape[0]):
 			self.points_s[i,1] = np.linalg.norm(all_points_diff[i-1,:]) + self.points_s[i-1,1]
 		return self.points_s
@@ -86,8 +94,8 @@ class ArcLengthParametrizer(object):
 			tval[i] = self.find_s(s_array[i])
 			#rint tval
 			# The curve should have a value( or __call__ if prefered) method that we can query to know its value in space
-		self.point_ls[:,0:self.dim] = self.curve(tval)
-		self.rhsinit = self.curve(tval)
+		self.point_ls[:,0:self.dim] = np.squeeze(self.curve(tval).transpose())
+		self.rhsinit = np.squeeze(self.curve(tval).transpose())
 		#self.point_ls[:,self.dim] = s_array[:,np.newaxis]
 		self.point_ls[:,self.dim] = tval[:,np.newaxis]
 			# In point_ls we store the value in space, the s_array and the tval obtained
@@ -114,6 +122,7 @@ class ArcLengthParametrizer(object):
     def reparametrization_LS_solver(self):
 		"""In this method we solve the LS system assembled before. The result should be the new knot_vector that
 		will form the arclength reparametrized curve."""
+		#print self.matrixB.shape, self.rhsinit.shape
 		res = np.linalg.lstsq(self.matrixB, self.rhsinit)
 		#print res[0]
 		return res[0]
