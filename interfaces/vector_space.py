@@ -2,12 +2,32 @@ import numpy as np
 
 class VectorSpace(object):
     """An abstract python interface used to describe *one dimensional
-    functions* on `[a,b]`, as *coefficients* times *basis functions*, with
-    access to single basis functions, their derivatives, their support and
-    the  splitting of `[a,b]` into sub-intervals where *each basis* is
-    assumed to be smooth.
+    functions* on `[a,b]`, as *coefficients* times *basis functions*,
+    with access to single basis functions, their derivatives, their
+    support and the splitting of `[a,b]` into sub-intervals where
+    *each basis* is assumed to be smooth.
 
-    The base class constructs the constant vector space.
+    This class provides an abstract interface to describe VectorSpaces
+    of functions from `[a,b]` into general `R^N = R^mxnxd...`.
+
+    The main attribute of this class is the `element` method, which
+    takes as input a numpy array of length VectorSpace.n_dofs
+
+    len(C) == VectorSpace.n_dofs # True    
+    g = VectorSpace.element(C)
+    
+    In general, this results in a callable function g, such that
+
+    shape( g(x) ) = shape(C[0])+shape(x)
+    
+    g := C[i,j,k, ...]*VectorSpace.basis(i) # sum over i is implicit
+
+    If you evaluate g at a nparray x, then
+    
+    C = g(x)
+    C[j,k,...,l,m,...] := C[i,j,k, ...]*VectorSpace.basis(i)(x[l,m, ...])
+    
+    where again a sum is implicit in i.
     """
     def __init__(self, a=0.0, b=1.0):
         """ Pure interface class. It generates the constant on [0,1]. """
