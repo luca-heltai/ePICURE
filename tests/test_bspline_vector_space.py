@@ -8,10 +8,10 @@ def test_bspline_vector_space_default_constructor():
     
     assert a.degree == 0
     
-    assert a.knots_with_rep[0] == 0.
-    assert a.knots_with_rep[1] == 1.
-    assert a.knots_unique[0] == 0.
-    assert a.knots_unique[1] == 1.
+    assert a.knots[0] == 0.
+    assert a.knots[1] == 1.
+    assert a.cells[0] == 0.
+    assert a.cells[1] == 1.
     
     assert a.n_knots == 2
     
@@ -32,17 +32,17 @@ def test_bspline_vector_space_general_constructor():
    
     assert a.degree == 2
     
-    assert a.knots_with_rep[0] == 0.
-    assert a.knots_with_rep[1] == 0.
-    assert a.knots_with_rep[2] == 0.
-    assert a.knots_with_rep[3] == 0.5
-    assert a.knots_with_rep[4] == 1.
-    assert a.knots_with_rep[5] == 1.
-    assert a.knots_with_rep[6] == 1.
+    assert a.knots[0] == 0.
+    assert a.knots[1] == 0.
+    assert a.knots[2] == 0.
+    assert a.knots[3] == 0.5
+    assert a.knots[4] == 1.
+    assert a.knots[5] == 1.
+    assert a.knots[6] == 1.
     
-    assert a.knots_unique[0] == 0.
-    assert a.knots_unique[1] == 0.5
-    assert a.knots_unique[2] == 1.
+    assert a.cells[0] == 0.
+    assert a.cells[1] == 0.5
+    assert a.cells[2] == 1.
     
     assert a.n_knots == 7
 
@@ -70,13 +70,6 @@ def test_compute_mults():
     assert mults[1] == 2
     assert mults[2] == 1
     assert mults[3] == 4
-
-
-def test_compute_n_dofs():
-    a = BsplineVectorSpace(3, [0.,0.,0.,0.,2.,2.,3.,5.,5.,5.,5.])
-    assert a.compute_n_dofs(np.asarray([0.,2.,3.,5.], np.float),
-                                       np.asarray([4,2,1,4], np.int_), 3) == 7
-
 
 def test_cell_span():
     a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.5,5.,6.,6.,6.,6.])
@@ -116,19 +109,19 @@ def test_find_span():
     a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.5,5.,6.,6.,6.,6.])
     assert a.find_span(0.) == 3
     assert a.find_span(0.1) == 3
-    assert a.find_span(1.) == 3
+    assert a.find_span(1.) == 4
     assert a.find_span(2.4) == 4
-    assert a.find_span(2.5) == 4
+    assert a.find_span(2.5) == 5
     assert a.find_span(2.6) == 5
     assert a.find_span(6.) == 6
 
     a = BsplineVectorSpace(3, [0.,0.,0.,0.,1.,2.,2.,2.,4.,5.,6.,6.,6.,6.])
     assert a.find_span(0.) == 3
     assert a.find_span(0.1) == 3
-    assert a.find_span(1.) == 3
+    assert a.find_span(1.) == 4
     assert a.find_span(1.4) == 4
-    assert a.find_span(2.) == 4
-    assert a.find_span(4.) == 7
+    assert a.find_span(2.) == 7
+    assert a.find_span(4.) == 8
     assert a.find_span(5.9) == 9
     assert a.find_span(6.) == 9
 
@@ -164,6 +157,3 @@ def test_basis_der():
     assert a.basis_der(0,3)(0) == -6.0
     assert a.basis_der(0,4)(0) == 0.
 
-
-
- 
