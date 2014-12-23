@@ -155,26 +155,29 @@ def test_known_parametrization():
     new_vals = vsl.element(new_control_points_3d)(tt)
     #print vals.shape, new_vals.shape
     print np.amax((np.abs(vals-new_vals)))
-    assert np.amax(np.abs(control_points_3d-new_control_points_3d)) < toll
+    assert np.amax(np.abs(control_points_3d-new_control_points_3d))/P < toll
 
     #assert True
 
 def test_more_known_parametrization_together():
     R = 1
     P = 1
-    toll = 1.e-2
+    toll = 7.e-3
+    intervals = 5
+    vs_order = 2
+    n = (intervals*(vs_order)+1-1)
 
-    n = 10
+    #n = 18
     ii = np.linspace(0,1,n+1)
     n_1 = 2
     n_2 = 4
     control_points_3d = np.asarray(np.zeros([n+1,n_1,n_2,3]))#[np.array([R*np.cos(5*i * np.pi / (n + 1)), R*np.sin(5*i * np.pi / (n + 1)), P * i]) for i in range(0, n+1)]
     for k in range(n_1):
         for j in range(n_2):
-            control_points_3d[:,k,j,0] = np.squeeze(np.transpose(np.matrix([R*np.cos(5*i * np.pi / (n + 1))for i in ii])))
-            control_points_3d[:,k,j,1] = np.squeeze(np.transpose(np.matrix([R*np.sin(5*i * np.pi / (n + 1))for i in ii])))
-            control_points_3d[:,k,j,2] = np.squeeze(np.transpose(np.matrix([(k+j+1)*P*i for i in range(n+1)])))
-
+            control_points_3d[:,k,j,0] = np.array([R*np.cos(5*i * np.pi / (n + 1))for i in ii])
+            control_points_3d[:,k,j,1] = np.array([R*np.sin(5*i * np.pi / (n + 1))for i in ii])
+            control_points_3d[:,k,j,2] = np.array([(k+j+1)*P*i for i in range(n+1)])
+    #vsl = IteratedVectorSpace(UniformLagrangeVectorSpace(vs_order+1), np.linspace(0,1,intervals+1))
     vsl = AffineVectorSpace(UniformLagrangeVectorSpace(n+1),0,1)
     arky = ArcLengthParametrizer(vsl, control_points_3d)
     new_control_points_3d = arky.reparametrize()
@@ -185,8 +188,8 @@ def test_more_known_parametrization_together():
         for j in range(n_2):
             vals = vsl.element(control_points_3d)(tt)
             new_vals = vsl.element(new_control_points_3d)(tt)
-            print np.amax(np.abs(vals-new_vals))
-            assert np.amax(np.abs(vals-new_vals)) < toll
+            print np.amax(np.abs(vals-new_vals))/(k+j+1)/P, (k+j+1)
+            assert np.amax(np.abs(vals-new_vals))/(k+j+1)/P < toll
 
 
 

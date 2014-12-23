@@ -32,7 +32,7 @@ class ArcLengthParametrizer(object):
 			print "We will interpret wathever there is between first and last indeces of init_control_points shape as a list among which reparametrize"
 			self.param_list = np.array(self.orig_shape[1:-1])
 			self.param_tot = np.prod(self.param_list)
-			print self.param_tot, self.param_list
+			#print self.param_tot, self.param_list
 			self.all_init_control_points = self.all_init_control_points.reshape((self.orig_shape[0],self.param_tot,self.orig_shape[-1]))
 			self.all_new_control_points = self.all_new_control_points.reshape((self.orig_shape[0],self.param_tot,self.orig_shape[-1]))
 		else:

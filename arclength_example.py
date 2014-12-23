@@ -14,19 +14,23 @@ from interfaces import *
 
 R = 1
 P = 1
-
-n = 18
-ii = [(n+1) * np.cos(i * np.pi / (n + 1)) for i in range(n+1)]
+intervals=9
+vs_order=2
+n = (intervals*(vs_order)+1-1)
+print n
+ii = np.linspace(0,2,n+1)
+#ii = [(n+1) * np.cos(i * np.pi / (n + 1)) for i in range(n+1)]
 control_points_3d = np.asarray(np.zeros([n+1,2,3]))#[np.array([R*np.cos(5*i * np.pi / (n + 1)), R*np.sin(5*i * np.pi / (n + 1)), P * i]) for i in range(0, n+1)]
-control_points_3d[:,0,0] = np.squeeze(np.transpose(np.matrix([R*np.cos(5*i * np.pi / (n + 1))for i in ii])))
-control_points_3d[:,0,1] = np.squeeze(np.transpose(np.matrix([R*np.sin(5*i * np.pi / (n + 1))for i in ii])))
-control_points_3d[:,0,2] = np.squeeze(np.transpose(np.matrix([P*i for i in range(n+1)])))
-control_points_3d[:,1,0] = np.squeeze(np.transpose(np.matrix([R*np.cos(5*i * np.pi / (n + 1))for i in ii])))
-control_points_3d[:,1,1] = np.squeeze(np.transpose(np.matrix([R*np.sin(5*i * np.pi / (n + 1))for i in ii])))
-control_points_3d[:,1,2] = np.squeeze(np.transpose(np.matrix([2*P*i for i in range(n+1)])))
+control_points_3d[:,0,0] = np.array([R*np.cos(5*i * np.pi / (n + 1))for i in ii])
+control_points_3d[:,0,1] = np.array([R*np.sin(5*i * np.pi / (n + 1))for i in ii])
+control_points_3d[:,0,2] = np.array([P*i for i in range(n+1)])
+control_points_3d[:,1,0] = np.array([R*np.cos(5*i * np.pi / (n + 1))for i in ii])
+control_points_3d[:,1,1] = np.array([R*np.sin(5*i * np.pi / (n + 1))for i in ii])
+control_points_3d[:,1,2] = np.array([2*P*i for i in range(n+1)])
 
 #print control_points_3d[0]
-#vsl = IteratedVectorSpace(UniformLagrangeVectorSpace(3), np.linspace(0,1,10))
+vsl = IteratedVectorSpace(UniformLagrangeVectorSpace(vs_order+1), np.linspace(0,1,intervals+1))
+print vsl.n_dofs
 #vsl = AffineVectorSpace(UniformLagrangeVectorSpace(n+1),1,5)
 #BSpline parameters
 n = 17
@@ -40,7 +44,7 @@ knots[p:-p] = np.linspace(0,1,n)
 knots[0:p] = 0
 knots[-p::] = 1
 
-vsl = BsplineVectorSpace(p, knots)
+#vsl = BsplineVectorSpace(p, knots)
 #print vsl.n_dofs
 arky = ArcLengthParametrizer(vsl, control_points_3d)
 new_control_points_3d = arky.reparametrize()
@@ -52,6 +56,7 @@ plt.legend()
 plt.savefig('new_arclength.png')
 plt.close()
 plt.close()
+print np.amax(np.abs(control_points_3d - new_control_points_3d ))
 #print np.squeeze(new_control_points_3d[:,0,:])
 tt = np.linspace(0, 1, 128)
 tt4 = 4 * tt + 1
