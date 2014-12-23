@@ -22,10 +22,7 @@ p = 3
 n_ls = 140
 
 # Open knot vector
-knots = zeros(n+2*p)
-knots[p:-p] = linspace(0,1,n)
-knots[0:p] = 0
-knots[-p::] = 1
+knots = r_[p*[0], linspace(0,1,n), p*[1]]
 
 vs = BsplineVectorSpace(p, knots)
 
