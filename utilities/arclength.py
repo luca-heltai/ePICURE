@@ -19,14 +19,27 @@ class ArcLengthParametrizer(object):
 		numerically approximate the arclength, therefore we have called it arcfactor. We expect the
 		curve to be composed by a vector space and a control point array.
 		"""
-		self.init_control_points = np.asmatrix(init_control_points)
+		self.all_init_control_points = np.asarray(init_control_points)
 		self.vector_space = AffineVectorSpace(vector_space)
 		self.arcfactor = arcfactor
 		self.n_dofs = self.vector_space.n_dofs
-		self.dim = self.init_control_points[0].shape[1]
-		self.new_control_points = np.zeros(self.n_dofs * self.dim)
 		#print self.init_control_points.shape
-		self.curve = self.vector_space.element(self.init_control_points)
+		self.dim = self.all_init_control_points.shape[-1]
+		self.all_new_control_points = np.empty_like(self.all_init_control_points)
+		#print self.init_control_points.shape
+		self.orig_shape = self.all_init_control_points.shape
+		if(len(self.orig_shape) > 2):
+			print "We will interpret wathever there is between first and last indeces of init_control_points shape as a list among which reparametrize"
+			self.param_list = np.array(self.orig_shape[1:-1])
+			self.param_tot = np.prod(self.param_list)
+			#print self.param_tot, self.param_list
+			self.all_init_control_points = self.all_init_control_points.reshape((self.orig_shape[0],self.param_tot,self.orig_shape[-1]))
+			self.all_new_control_points = self.all_new_control_points.reshape((self.orig_shape[0],self.param_tot,self.orig_shape[-1]))
+		else:
+			self.curve = self.vector_space.element(self.all_init_control_points)
+			self.param_tot = 0
+
+
 		#print np.squeeze(self.curve(np.array([0.2,0.5]))).shape, np.array([0.2,0.5]).shape
 		#self.curve_der = self.vector_space.element_der(self.init_control_points,1)
 
@@ -34,15 +47,25 @@ class ArcLengthParametrizer(object):
 		"""This function compute the reparametrization. It queries the LS_assembler and LS_solver to compute
 		the new knot vector that you can use to build an arclength reparametrized curve. """
 		print "Starting the reparametrization"
-		self.compute_arclength()
-		print "Assembling the LS system"
-		self.reparametrization_LS_assembler()
-		print "Solving the system"
-		self.new_control_points = np.asmatrix(self.reparametrization_LS_solver())
-		# print "Preparing the solution"
-		
-		# new_cp = np.asmatrix(np.array([np.array([self.new_control_points[i*self.dim + j] for j in range(self.dim)]) for i in range(self.n_dofs)]))
-		return self.new_control_points
+		if(self.param_tot != 0):
+			for i in range(self.param_tot):
+				self.init_control_points = np.squeeze(self.all_init_control_points[:,i,:])
+				self.curve = self.vector_space.element(self.init_control_points)
+				self.compute_arclength()
+				print "Assembling the LS system"
+				self.reparametrization_LS_assembler()
+				print "Solving the system"
+				self.new_control_points = np.asarray(self.reparametrization_LS_solver())
+				self.all_new_control_points[:,i,:] = self.new_control_points
+			self.all_new_control_points = self.all_new_control_points.reshape(self.orig_shape)
+		else:
+			self.init_control_points = self.all_init_control_points
+			self.compute_arclength()
+			print "Assembling the LS system"
+			self.reparametrization_LS_assembler()
+			print "Solving the system"
+			self.all_new_control_points = np.asarray(self.reparametrization_LS_solver())
+		return self.all_new_control_points
 
     def compute_arclength(self):
 		"""This function compute the overall length of the curve. We choose to do this

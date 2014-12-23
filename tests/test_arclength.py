@@ -133,29 +133,66 @@ def test_reparametrization():
 def test_known_parametrization():
     R = 1
     P = 1
-    toll = 1.e-6
+    toll = 2.e-3
 
     n = 10
     ii = np.linspace(0,1,n+1)
-    control_points_3d = np.asmatrix(np.zeros([n+1,3]))#[np.array([R*np.cos(5*i * np.pi / (n + 1)), R*np.sin(5*i * np.pi / (n + 1)), P * i]) for i in range(0, n+1)]
-    control_points_3d[:,0] = np.transpose(np.matrix([R*np.cos(5*i * np.pi / (n + 1))for i in ii]))
-    control_points_3d[:,1] = np.transpose(np.matrix([R*np.sin(5*i * np.pi / (n + 1))for i in ii]))
-    control_points_3d[:,2] = np.transpose(np.matrix([P*i for i in range(n+1)]))
+    control_points_3d = np.asarray(np.zeros([n+1,3]))#[np.array([R*np.cos(5*i * np.pi / (n + 1)), R*np.sin(5*i * np.pi / (n + 1)), P * i]) for i in range(0, n+1)]
+    print control_points_3d.shape
+    control_points_3d[:,0] = np.array([R*np.cos(5*i * np.pi / (n + 1))for i in ii])
+    control_points_3d[:,1] = np.array([R*np.sin(5*i * np.pi / (n + 1))for i in ii])
+    control_points_3d[:,2] = np.array([P*i for i in range(n+1)])
     vsl = AffineVectorSpace(UniformLagrangeVectorSpace(n+1),0,1)
     arky = ArcLengthParametrizer(vsl, control_points_3d)
     new_control_points_3d = arky.reparametrize()
 
-    new_arky = ArcLengthParametrizer(vsl, new_control_points_3d)
-    new_new_control_points_3d = arky.reparametrize()
+    #new_arky = ArcLengthParametrizer(vsl, new_control_points_3d)
+    #new_new_control_points_3d = arky.reparametrize()
     tt = np.linspace(0, 1, 128)
 
-    new_new_vals = vsl.element(new_new_control_points_3d)(tt)
+    vals = vsl.element(control_points_3d)(tt)
     #print vals
     new_vals = vsl.element(new_control_points_3d)(tt)
     #print vals.shape, new_vals.shape
-    assert np.amax(np.abs(new_new_vals-new_vals)) < toll
+    print np.amax((np.abs(vals-new_vals)))
+    assert np.amax(np.abs(control_points_3d-new_control_points_3d))/P < toll
 
-    assert True
+    #assert True
+
+def test_more_known_parametrization_together():
+    R = 1
+    P = 1
+    toll = 7.e-3
+    intervals = 5
+    vs_order = 2
+    n = (intervals*(vs_order)+1-1)
+
+    #n = 18
+    ii = np.linspace(0,1,n+1)
+    n_1 = 2
+    n_2 = 4
+    control_points_3d = np.asarray(np.zeros([n+1,n_1,n_2,3]))#[np.array([R*np.cos(5*i * np.pi / (n + 1)), R*np.sin(5*i * np.pi / (n + 1)), P * i]) for i in range(0, n+1)]
+    for k in range(n_1):
+        for j in range(n_2):
+            control_points_3d[:,k,j,0] = np.array([R*np.cos(5*i * np.pi / (n + 1))for i in ii])
+            control_points_3d[:,k,j,1] = np.array([R*np.sin(5*i * np.pi / (n + 1))for i in ii])
+            control_points_3d[:,k,j,2] = np.array([(k+j+1)*P*i for i in range(n+1)])
+    #vsl = IteratedVectorSpace(UniformLagrangeVectorSpace(vs_order+1), np.linspace(0,1,intervals+1))
+    vsl = AffineVectorSpace(UniformLagrangeVectorSpace(n+1),0,1)
+    arky = ArcLengthParametrizer(vsl, control_points_3d)
+    new_control_points_3d = arky.reparametrize()
+
+    #print control_points_3d.shape, new_control_points_3d.shape
+    tt = np.linspace(0,1,128)
+    for k in range(n_1):
+        for j in range(n_2):
+            vals = vsl.element(control_points_3d)(tt)
+            new_vals = vsl.element(new_control_points_3d)(tt)
+            print np.amax(np.abs(vals-new_vals))/(k+j+1)/P, (k+j+1)
+            assert np.amax(np.abs(vals-new_vals))/(k+j+1)/P < toll
+
+
+
 
 
 
