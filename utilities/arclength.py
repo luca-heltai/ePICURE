@@ -25,9 +25,9 @@ class ArcLengthParametrizer(object):
 		self.n_dofs = self.vector_space.n_dofs
 		self.dim = self.init_control_points[0].shape[1]
 		self.new_control_points = np.zeros(self.n_dofs * self.dim)
-		print self.init_control_points.shape
+		#print self.init_control_points.shape
 		self.curve = self.vector_space.element(self.init_control_points)
-		print np.squeeze(self.curve(np.array([0.2,0.5]))).shape, np.array([0.2,0.5]).shape
+		#print np.squeeze(self.curve(np.array([0.2,0.5]))).shape, np.array([0.2,0.5]).shape
 		#self.curve_der = self.vector_space.element_der(self.init_control_points,1)
 
     def reparametrize(self):		
@@ -54,8 +54,8 @@ class ArcLengthParametrizer(object):
 								 np.zeros(self.arcfactor * self.arcfactor * self.n_dofs)])
 		self.points_s = self.points_s.transpose()
 		self.points_s[0,1] = 0.
-		all_points_trial = self.curve(np.array(self.points_s[:,0]))
-		print  np.array(self.points_s[:,0]).shape, all_points_trial.shape
+		#all_points_trial = self.curve(np.array(self.points_s[:,0]).transpose())
+		#print  np.array(self.points_s[:,0]).transpose().shape, all_points_trial.shape
 
 		all_points = np.asmatrix(np.squeeze(self.curve(np.array(self.points_s[:,0])))).transpose()
 		#all_points = all_points.transpose()
