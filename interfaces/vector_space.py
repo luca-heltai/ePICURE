@@ -103,6 +103,11 @@ class VectorSpace(object):
             print 'Cell {}: [{},{}]'.format(i, self.cells[i], self.cells[i+1])
             print 'Nonzero basis: {}'.format(self.cell_span(i))
         print '------------------------------------------------------------'
+
+    def __imul__(self, n):
+        """This allows the construction of repeated VectorSpaces by simply
+        multiplying the VectorSpace with an integer. """
+        return RepeatedVectorSpace(self, n)
         
 class AffineVectorSpace(VectorSpace):
     """Affine transformation of a VectorSpace. Given a vector space, returns
@@ -273,3 +278,9 @@ class IteratedVectorSpace(VectorSpace):
         startid = b*(self.vs.n_dofs-self.vs.n_dofs_per_end_point)
         local_ids = self.vs.cell_span(j)
         return [id+startid for id in local_ids]
+
+class RepeatedVectorSpace(IteratedVectorSpace):
+    """Construct an IteratedVectorSpace with uniform repetitions."""
+    def __init__(self, vs, n):
+        IteratedVectorSpace.__init__(self, vs, np.linspace(0,1,n))
+
