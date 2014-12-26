@@ -10,8 +10,8 @@ def test_from_lambda_to_lambda():
 	
 	function = lambda t: np.array([np.sin(2*np.pi*t),np.cos(2*np.pi*t), t])
 
-	curve1 = ArcLenghtCurve_from_lambda(vector_space,function)
-	curve2 = ArcLenghtCurve_from_coords(vector_space,curve1.coords)
+	curve1 = ALCFromLambda(vector_space,function)
+	curve2 = ALCFromCoords(vector_space,curve1.coords)
 
 	s_space=np.linspace(0,1,1025)
 	assert (abs(function(s_space)-curve2.gamma(s_space))<10e-10).all(), \
@@ -25,11 +25,11 @@ def test_from_lambda_to_curvature():
 
 	k=lambda t: 2*np.pi +0*t
 	tau=lambda t: 0
-	circ = ArcLenghtCurve_from_kappa_and_tau(vector_space,k,tau)
+	circ = ALCFromKappaAndTau(vector_space,k,tau)
 
 	function=lambda t: circ.gamma(t)
-	curve = ArcLenghtCurve_from_lambda(vector_space, function)
-	newCurve = ArcLenghtCurve_from_kappa_and_tau(vector_space,curve.kappa,curve.tau)
+	curve = ALCFromLambda(vector_space, function)
+	newCurve = ALCFromKappaAndTau(vector_space,curve.kappa,curve.tau)
 
 	assert (abs(newCurve.kappa(s_space)-k(s_space))<0.1).all(), \
 	        'Expecting Failure! Coputation of curvature form lambda is not sharp enought'
@@ -45,6 +45,6 @@ def test_curvature():
 	vector_space = AffineVectorSpace(vs)
 	kappa = lambda t : t*0 + 1
 	function = lambda t: np.array([np.sin(t),np.cos(t),0*t])
-	curve = ArcLenghtCurve_from_lambda(vector_space, function)
+	curve = ALCFromLambda(vector_space, function)
 	assert (abs(curve.kappa(s_space)-kappa(s_space))<10e-8).all(), \
 	        'Expecting Failure! Computation of curvature is not sharp enought'

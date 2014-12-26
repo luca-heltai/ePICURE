@@ -39,15 +39,15 @@ class ArcLenghtCurve(object):
 		and third derivative of the curve."""
 		assert (self.gamma != ''), \
 				"self.gamma is not defined."
-		self.dt   = self.vs.element_der(self.coords,1)
-		self.ddt  = self.vs.element_der(self.coords,2)
-		self.dddt = self.vs.element_der(self.coords,3)
+		self.ds   = self.vs.element_der(self.coords,1)
+		self.dds  = self.vs.element_der(self.coords,2)
+		self.ddds = self.vs.element_der(self.coords,3)
 
 	def first_derivative_modulus(self):
 		assert (self.gamma != ''), \
 			"self.gamma is not defined."
 		self.first_derivatives()
-		print ((self.dt(self.s_space).T).dot(self.dt(self.s_space))).diagonal()
+		print ((self.ds(self.s_space).T).dot(self.ds(self.s_space))).diagonal()
 
 	def first_normal_modulus(self):
 		print ((self.normal(self.s_space)).dot(self.normal(self.s_space).T)).diagonal()
@@ -57,9 +57,9 @@ class ArcLenghtCurve(object):
 			of self.gamma."""
 		self.first_derivatives()
 		def tau(t):
-			DX = self.dt(t)
-			DDX = self.ddt(t)
-			DDDX = self.dddt(t)
+			DX = self.ds(t)
+			DDX = self.dds(t)
+			DDDX = self.ddds(t)
 			den = np.array(LA.norm(np.cross(DX.T,DDX.T).T,axis=0)**2)
 			ids = np.array(den==0)
 			den[ids]+=np.finfo(np.float64).eps
@@ -71,8 +71,8 @@ class ArcLenghtCurve(object):
 			of self.gamma."""
 		self.first_derivatives()
 		def curv(t):
-			DX = self.dt(t)
-			DDX = self.ddt(t)
+			DX = self.ds(t)
+			DDX = self.dds(t)
 			den = np.array((LA.norm(DX, axis=0))**3)
 			ids = np.array(den==0)
 			den[ids]+=np.finfo(np.float64).eps
@@ -86,7 +86,7 @@ class ArcLenghtCurve(object):
 			self.from_lambda_to_coords()
 		reparamCurve = ArcLengthParametrizer(self.vs,self.coords,\
 							arcfactor = int(len(self.s_space))*100)
-		self.gamma = reparamCurve.curve
+		self.gamma = lambda t: reparamCurve.curve(t)
 
 	def curve_from_curvature(self,\
 					start = 0, end = 1, \
@@ -132,7 +132,7 @@ class ArcLenghtCurve(object):
 	def BNorm(self):
 		print np.sum(self.frenet[:,:,2]**2, axis=1)
 
-class ArcLenghtCurve_from_coords(ArcLenghtCurve):
+class ALCFromCoords(ArcLenghtCurve):
 	"""	Given a set of coordinates with respect to the basis
 		of the vector space, this methot returns a lambda function
 		representing the curve in the space."""
@@ -142,7 +142,7 @@ class ArcLenghtCurve_from_coords(ArcLenghtCurve):
 		self.s_space = np.linspace(0,1,1025)
 		self.from_coords_to_lambda()
 
-class ArcLenghtCurve_from_lambda(ArcLenghtCurve):
+class ALCFromLambda(ArcLenghtCurve):
 	""" Given a vectorial lambda function this method returns the coordinates
 	 	with respect to the basis of the vector space."""
 	def __init__(self, vs, gamma, s_space=np.linspace(0,1,1025)):
@@ -154,7 +154,7 @@ class ArcLenghtCurve_from_lambda(ArcLenghtCurve):
 		self.curvature()
 		self.torsion()
 
-class ArcLenghtCurve_from_kappa_and_tau(ArcLenghtCurve):
+class ALCFromKappaAndTau(ArcLenghtCurve):
 	""" Given two lambda functions representing curvature and torsion,
 	 	this class returns an arclenght curve. Moreover, curvature 
 		and torsione are recalculated with respect the new curve."""
