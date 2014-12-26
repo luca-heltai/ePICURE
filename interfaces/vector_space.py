@@ -233,7 +233,9 @@ class IteratedVectorSpace(VectorSpace):
             b = span[p[0]+1]
             vs = self.vs
             vs.reset(a, b)
-            ids = np.array( (a<=x) & (x<=b) )
+            if b == self.cells[-1]:
+                b += 1
+            ids = np.array( (a<=x) & (x<b) )
             y[ids] = vs.basis(p[1])(x[ids])
         return y
             
@@ -249,7 +251,9 @@ class IteratedVectorSpace(VectorSpace):
             b = span[p[0]+1]
             vs = self.vs
             vs.reset(a, b)
-            ids = np.array( (a<=x) & (x<=b) )
+            if b == self.cells[-1]:
+                b += 1
+            ids = np.array( (a<=x) & (x<b) )
             y[ids] = vs.basis_der(p[1], d)(x[ids])
         return y
     
@@ -282,5 +286,5 @@ class IteratedVectorSpace(VectorSpace):
 class RepeatedVectorSpace(IteratedVectorSpace):
     """Construct an IteratedVectorSpace with uniform repetitions."""
     def __init__(self, vs, n):
-        IteratedVectorSpace.__init__(self, vs, np.linspace(0,1,n))
+        IteratedVectorSpace.__init__(self, vs, np.linspace(0,1,n+1))
 
