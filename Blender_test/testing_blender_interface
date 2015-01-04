@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+#rm -rf test.app
+
+#SET BLENDER PATH
+BLENDER_PATH=/Applications/Blender/blender.app/Contents/MacOS/
+
+#SET THE LOCATION OF THE BLANDER PLAYER
+export BLENDER_PLAYER=/Applications/Blender/blenderplayer.app
+
+#SET THE LOCATION ON WHERE THE FILE MUST BE SAVED
+export SAVEPATH=/Users/deathquasar/Google\ Drive/MHCP/ePICURE/Blender_test/
+
+#SET THE FILENAME
+export FILENAME=test.app
+
+
+
+#RUN THE SCRIPT AND EXPORT THE FILE AS A STANDALONE GAME
+FLAGS=--background
+#PYTHONFLAGS=
+${BLENDER_PATH}blender $FLAGS --python blender_interface.py
