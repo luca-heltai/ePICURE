@@ -68,7 +68,7 @@ class ArcLengthParametrizer(object):
 				self.max_length = np.max(self.lengths)
 				for i in range(self.param_tot):
 					self.new_control_points = self.all_new_control_points[:,i,:]
-					self.length_fixer(self.lengths[i])
+					self.length_fixer(self.max_length)
 					self.all_new_control_points[:,i,:] = self.new_control_points
 			self.all_new_control_points = self.all_new_control_points.reshape(self.orig_shape)
 		else:
