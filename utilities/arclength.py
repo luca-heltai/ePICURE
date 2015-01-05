@@ -107,8 +107,6 @@ class ArcLengthParametrizer(object):
 		for i in range(1, self.points_s.shape[0]):
 			self.points_s[i,1] = np.linalg.norm(all_points_diff[i-1,:]) + self.points_s[i-1,1]
 		self.lengths[param] = self.points_s[-1,1]
-		print 'pippo'
-		print self.lengths[param], self.points_s[-1,1]
 		return self.points_s
 
     def find_s(self, sval):
@@ -177,9 +175,17 @@ class ArcLengthParametrizer(object):
 		all the others."""
 		cp0 = deepcopy(self.new_control_points[0])
 		self.new_control_points -= cp0
-		self.compute_arclength
-		actual_length = self.points_s[-1,1]
-		print actual_length, prescribed_length
+		# Here we need to compute the overall length of the reparametrized curve in order to rescale it properly
+		new_curve = self.vector_space.element(self.new_control_points)
+		self.new_points_s = np.matrix([np.linspace(0, 1, self.arcfactor * self.arcfactor * self.n_dofs), 
+								 np.zeros(self.arcfactor * self.arcfactor * self.n_dofs)])
+		self.new_points_s = self.new_points_s.transpose()
+		self.new_points_s[0,1] = 0.
+		all_points = np.asmatrix(np.squeeze(new_curve(np.array(self.new_points_s[:,0])))).transpose()
+		all_points_diff = np.diff(all_points,1,0);
+		for i in range(1, self.new_points_s.shape[0]):
+			self.new_points_s[i,1] = np.linalg.norm(all_points_diff[i-1,:]) + self.new_points_s[i-1,1]
+		actual_length = self.new_points_s[-1,1]
 		self.new_control_points *= prescribed_length / actual_length
 		self.new_control_points += cp0
 		return self.new_control_points

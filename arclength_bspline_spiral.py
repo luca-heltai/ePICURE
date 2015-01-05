@@ -12,7 +12,7 @@ radius = 1.0
 
 # Spiral analytical expression
 cx = lambda x: radius*exp(x)*sin(nturns*2*pi*x)
-cy = lambda y: radius*exp(y)*cos(nturns*2*pi*y)
+cy = lambda y: radius*2*exp(y)*cos(nturns*2*pi*y)
 cz = lambda z: heigth*exp(z)*z
 
 # BSpline parameters
@@ -59,7 +59,7 @@ plt.legend()
 plt.savefig('BSplinearclength.png')
 plt.close()
 plt.close()
-print new_arky_fixed.points_s[-1,1], arky.points_s[-1,1]
+#print new_arky_fixed.points_s[-1,1], arky.points_s[-1,1]
 print CP.shape, type(CP) 
 print CP_al.shape, type(CP_al)
 # Approximated curve at points
