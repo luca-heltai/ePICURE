@@ -5,10 +5,10 @@ from scipy.interpolate import lagrange
 from numpy.polynomial.chebyshev import chebgauss
 import sys
 from utilities import *
-from interfaces import *
 #from utilities.arclength import*
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from interfaces import *
 
 
 
@@ -46,7 +46,7 @@ knots[-p::] = 1
 
 #vsl = BsplineVectorSpace(p, knots)
 #print vsl.n_dofs
-arky = ArcLengthParametrizer(vsl, control_points_3d)
+arky = ArcLengthParametrizer(vsl, control_points_3d,10,1)
 new_control_points_3d = arky.reparametrize()
 new_arky = ArcLengthParametrizer(vsl, new_control_points_3d)
 new_arky.reparametrize()
