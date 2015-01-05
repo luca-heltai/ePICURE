@@ -25,7 +25,9 @@ class ArcLenghtCurve(object):
 		assert (self.gamma != ''), \
 				"self.gamma is not defined."
 		# calculate the dimension of the space given the curve
-		self.coords = least_square(self.gamma, self.vs, s_space)
+		gamma = lambda s: self.gamma(s).T
+		np.shape(gamma(self.s_space))
+		self.coords = least_square(gamma, self.vs, s_space)
 
 	def from_coords_to_lambda(self):
 		"""This method allows us to pass from coords representation to
@@ -37,8 +39,8 @@ class ArcLenghtCurve(object):
 	def first_derivatives(self):
 		""" If self.gamma is defined this method returns first, second, 
 		and third derivative of the curve."""
-		assert (self.gamma != ''), \
-				"self.gamma is not defined."
+		assert (self.coords != ''), \
+				"self.coords is not defined."
 		self.ds   = self.vs.element_der(self.coords,1)
 		self.dds  = self.vs.element_der(self.coords,2)
 		self.ddds = self.vs.element_der(self.coords,3)
@@ -64,7 +66,7 @@ class ArcLenghtCurve(object):
 			ids = np.array(den==0)
 			den[ids]+=np.finfo(np.float64).eps
 			return np.sum(np.cross(DX.T,DDX.T).T*DDDX,axis=0)/den
-		self.tau = tau
+		self.tau = lambda t: tau(t)
 
 	def curvature(self):
 		"""This method provides a lambda function representing the curvature
@@ -94,43 +96,78 @@ class ArcLenghtCurve(object):
 					frenet0 = np.eye(3,3).reshape((-1,)),\
 					L = 1):
 		"""This method provides a curve starting from curvature and torsion."""
-		M = lambda frenet,t: L*(np.array([\
-		  		[0,         		self.kappa(t),   0			], \
-				[-self.kappa(t), 	0,          	-self.tau(t)], \
-				[0,         		self.tau(t),     0			]	] \
-				).dot(frenet.reshape((3,3)))).reshape((-1,))
-		self.frenet = odeint(M, frenet0, self.s_space).reshape((-1, 3,3))
-		self.curve_discrete = x0 + \
-			np.cumsum(self.frenet[:,:,0],axis=0)/(len(self.s_space))
-		self.gamma = lambda t: np.array(interp1d(self.s_space,self.curve_discrete.T)(t)).T
-		self.normal = lambda t: np.array(interp1d(self.s_space,self.frenet[:,:,1].T)(t)).T
+		k = lambda s : np.array([self.kappa(s)])
+		t = lambda s : np.array([self.tau(s)])
+		
+		assert np.shape(k(0)) == np.shape(t(0)), \
+		        "ERROR: Curvature and Torsion has different shape as numpy array."
+				
+		try:
+		# np.max is needed to avoid error using column/row array.
+		    dim = np.max(np.shape(k(0)))
+		except:
+		    dim = 1
+			
+		KAPPA = np.array([[0,1,0],[-1,0,0],[0,0,0]])
+		TAU = np.array([[0,0,0],[0,0,1],[0,-1,0]])
+		K = lambda s : (KAPPA.reshape(-1,1)*k(s)).reshape(-1,)
+		T = lambda s : (TAU.reshape(-1,1)*t(s)).reshape(-1,)
+		KT = lambda s : (K(s)+T(s)).reshape(3,3,-1).T.transpose(0,2,1)
+
+		# Default value for frenet initial setting:
+		# It is the identity matrix for every curve
+		onesk = np.array(np.ones(dim))
+		frenet0 = (np.eye(3).reshape(-1,1)*onesk).reshape(3,3,-1).T.transpose(0,2,1).reshape(dim,-1).T.reshape(-1,)
+
+		def Matrix(frenet,s):
+		    MMR = lambda s: [KT(s)[i].dot(frenet.reshape(3,3,dim).T.transpose(0,2,1)[i]) for i in xrange(dim)]
+		    return np.array(zip(MMR(s))).reshape(dim,-1).T.reshape(-1,)
+
+		frenet = odeint(Matrix, frenet0, self.s_space)
+
+		F = frenet.reshape(-1,3,3,dim).transpose(0,2,1,3)
+
+		# Decomposing Frenet-Serret set
+		L , N , B = F[:,:,:,:].transpose(2,3,1,0)
+		curve_discrete = np.cumsum(np.squeeze(L),axis=-1)/len(self.s_space)
+		self.gamma = lambda t: np.array(interp1d(self.s_space,curve_discrete)(t))
+		self.normal = lambda t: np.array(interp1d(self.s_space,np.squeeze(N))(t))
+		self.binormal = lambda t: np.array(interp1d(self.s_space,np.squeeze(B))(t))
 		self.reparametrise()
 		
-	def plot(self, normal=False):
-		"""This method plot slf.gamm in a 3D plot."""
+	def plot(self, \
+			binormal=False,  	binormal_lenght=.0005, \
+			normal=False, 		normal_lenght=.0005):
+		"""This method plot self.gamm in a 3D plot. Options that an be used
+		to analyse this plot are the following:
+		- normal = False/True : this option allows to plot the normal 
+			vector fiels;
+		- normal_lenght : it is the lenght of each arrow of the vector field;
+		- binormal = False/True : this option allows to plot the binormal 
+			vector fiels;
+		- binormal_lenght : it is the lenght of each arrow of the vector 
+			field."""
 		fig = plt.figure()
 		ax = fig.gca(projection='3d')
 		plt.axis('equal')
 		ax.plot(self.gamma(self.s_space)[0], self.gamma(self.s_space)[1], self.gamma(self.s_space)[2],'r', label='curve')
 		if normal:
 			ax.quiver(\
-				self.gamma(self.s_space)[0]-self.normal(self.s_space)[:,0]*.01, \
-				self.gamma(self.s_space)[1]-self.normal(self.s_space)[:,1]*.01, \
-				self.gamma(self.s_space)[2]-self.normal(self.s_space)[:,2]*.01, \
-				-self.normal(self.s_space)[:,0], -self.normal(self.s_space)[:,1], -self.normal(self.s_space)[:,2], \
-				length=.01, label='normal', color='blue')
+				self.gamma(self.s_space)[0]+normal_lenght*self.normal(self.s_space)[0], \
+				self.gamma(self.s_space)[1]+normal_lenght*self.normal(self.s_space)[1], \
+				self.gamma(self.s_space)[2]+normal_lenght*self.normal(self.s_space)[2], \
+				+self.normal(self.s_space)[0], +self.normal(self.s_space)[1], +self.normal(self.s_space)[2], \
+				length=normal_lenght,  color='blue')
+		if binormal:
+			ax.quiver(\
+				self.gamma(self.s_space)[0]+binormal_lenght*self.binormal(self.s_space)[0], \
+				self.gamma(self.s_space)[1]+binormal_lenght*self.binormal(self.s_space)[1], \
+				self.gamma(self.s_space)[2]+binormal_lenght*self.binormal(self.s_space)[2], \
+				+self.binormal(self.s_space)[0], +self.binormal(self.s_space)[1], +self.binormal(self.s_space)[2], \
+				length=binormal_lenght,  color='green')
 		ax.legend()
 		plt.show()
 		# plt.close()
-
-	def LNorm(self):
-		print np.sum(self.frenet[:,:,0]**2, axis=1)
-		
-	def NNorm(self):
-		print np.sum(self.frenet[:,:,1]**2, axis=1)
-		
-	def BNorm(self):
-		print np.sum(self.frenet[:,:,2]**2, axis=1)
 
 class ALCFromCoords(ArcLenghtCurve):
 	"""	Given a set of coordinates with respect to the basis
@@ -149,7 +186,7 @@ class ALCFromLambda(ArcLenghtCurve):
 		self.coords = ''
 		self.vs = vs
 		self.s_space=s_space
-		self.gamma = lambda t : gamma(t).T
+		self.gamma = lambda t : gamma(t)
 		self.from_lambda_to_coords()
 		self.curvature()
 		self.torsion()
@@ -176,5 +213,6 @@ class ALCFromKappaAndTau(ArcLenghtCurve):
 					x0 = self.x0,\
 					frenet0 = self.frenet0,\
 					L = self.L)
+		self.from_lambda_to_coords()
 		self.curvature()
 		self.torsion()

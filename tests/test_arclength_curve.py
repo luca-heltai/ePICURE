@@ -32,12 +32,12 @@ def test_from_lambda_to_curvature():
 	newCurve = ALCFromKappaAndTau(vector_space,curve.kappa,curve.tau)
 
 	assert (abs(newCurve.kappa(s_space)-k(s_space))<0.1).all(), \
-	        'Expecting Failure! Coputation of curvature form lambda is not sharp enought'
+        'Expecting Failure! Coputation of curvature form lambda is not sharp enought'
 	assert (abs(newCurve.tau(s_space)-tau(s_space))<10e-10).all(), \
-	        'Expecting Failure! Coputation of torsion form lambda is not sharp enought'
-	assert (abs(newCurve.gamma(s_space)-curve.gamma(s_space).T)<10e-2).all(), \
-			'Expecting Failure! Coputation of the curve is not sharp enought'
-
+        'Expecting Failure! Coputation of torsion form lambda is not sharp enought'
+	assert (abs(newCurve.gamma(s_space)-curve.gamma(s_space))<10e-2).all(), \
+        'Expecting Failure! Coputation of the curve is not sharp enought'
+		
 def test_curvature():
 	
 	s_space=np.linspace(0,1,30)
