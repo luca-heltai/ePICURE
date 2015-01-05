@@ -46,16 +46,20 @@ CP_al = np.asarray(arky.reparametrize())
 curve = vs.element(CP)
 print CP.shape
 curve_al = vs.element(CP_al)
-
+arky_fixed = ArcLengthParametrizer(vs, CP, 10, 1)
+CP_al_lf = np.asarray(arky_fixed.reparametrize())
+new_arky_fixed = ArcLengthParametrizer(vs, CP_al_lf)
+new_arky_fixed.reparametrize()
 new_arky = ArcLengthParametrizer(vs, CP_al)
 new_arky.reparametrize()
 plt.plot(arky.points_s[:,0],arky.points_s[:,1],label='original')
 plt.plot(new_arky.points_s[:,0],new_arky.points_s[:,1],label='reparametrized')
+plt.plot(new_arky_fixed.points_s[:,0],new_arky_fixed.points_s[:,1],label='reparametrized_lf')
 plt.legend()
 plt.savefig('BSplinearclength.png')
 plt.close()
 plt.close()
-
+print new_arky_fixed.points_s[-1,1], arky.points_s[-1,1]
 print CP.shape, type(CP) 
 print CP_al.shape, type(CP_al)
 # Approximated curve at points
@@ -70,8 +74,8 @@ ax.plot(F[0,:], F[1,:], F[2,:],'r')
 ax.plot(CP[:,0], CP[:,1], CP[:,2], 'bo-')
 #savefig('fig.png')
 #plt.close()
-ax.plot(C_al[0,:], C_al[1,:], C_al[2,:],'g')
 #ax.plot(F[0,:], F[1,:], F[2,:])
 ax.plot(CP_al[:,0], CP_al[:,1],CP_al[:,2], 'go-')
+ax.plot(CP_al_lf[:,0], CP_al_lf[:,1],CP_al_lf[:,2], 'ko-')
 savefig('fig_al.png')
 

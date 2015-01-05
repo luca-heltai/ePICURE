@@ -41,7 +41,7 @@ class ArcLengthParametrizer(object):
 		else:
 			self.curve = self.vector_space.element(self.all_init_control_points)
 			self.param_tot = 0
-			self.lengths = np.array([0])
+			self.lengths = np.array([0.])
 
 
 		#print np.squeeze(self.curve(np.array([0.2,0.5]))).shape, np.array([0.2,0.5]).shape
@@ -64,6 +64,12 @@ class ArcLengthParametrizer(object):
 				if (self.length_constraint == 1):
 					self.length_fixer(self.lengths[i])
 				self.all_new_control_points[:,i,:] = self.new_control_points
+			if(self.length_constraint == 2):
+				self.max_length = np.max(self.lengths)
+				for i in range(self.param_tot):
+					self.new_control_points = self.all_new_control_points[:,i,:]
+					self.length_fixer(self.lengths[i])
+					self.all_new_control_points[:,i,:] = self.new_control_points
 			self.all_new_control_points = self.all_new_control_points.reshape(self.orig_shape)
 		else:
 			self.init_control_points = self.all_init_control_points
@@ -71,7 +77,12 @@ class ArcLengthParametrizer(object):
 			print "Assembling the LS system"
 			self.reparametrization_LS_assembler()
 			print "Solving the system"
-			self.all_new_control_points = np.asarray(self.reparametrization_LS_solver())
+			self.new_control_points = np.asarray(self.reparametrization_LS_solver())
+			if (self.length_constraint == 1):
+				self.length_fixer(self.lengths[0])
+				self.length_fixer(self.lengths[0]);
+			self.all_new_control_points = self.new_control_points
+
 		return self.all_new_control_points
 
     def compute_arclength(self,param=0):
@@ -96,6 +107,8 @@ class ArcLengthParametrizer(object):
 		for i in range(1, self.points_s.shape[0]):
 			self.points_s[i,1] = np.linalg.norm(all_points_diff[i-1,:]) + self.points_s[i-1,1]
 		self.lengths[param] = self.points_s[-1,1]
+		print 'pippo'
+		print self.lengths[param], self.points_s[-1,1]
 		return self.points_s
 
     def find_s(self, sval):
@@ -163,13 +176,12 @@ class ArcLengthParametrizer(object):
 		By default we fix this to the original length of the curve. We fix the first control point and then we dilatates
 		all the others."""
 		cp0 = deepcopy(self.new_control_points[0])
-		print cp0
 		self.new_control_points -= cp0
 		self.compute_arclength
 		actual_length = self.points_s[-1,1]
+		print actual_length, prescribed_length
 		self.new_control_points *= prescribed_length / actual_length
 		self.new_control_points += cp0
-		print cp0, self.new_control_points[0]
 		return self.new_control_points
 
 #	def length_fixer(self,prescribed_length=1):	
