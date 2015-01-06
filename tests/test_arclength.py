@@ -1,9 +1,6 @@
 import sys
-# the arc_lib dir containes MyCurve tools to test the arclength
-sys.path.append('../utilities')
-sys.path.append('../interfaces')
-from utilities.arc_lib import *
-from utilities.arclength import *
+from interfaces import *
+from utilities import *
 from nose.tools import *
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -191,8 +188,101 @@ def test_more_known_parametrization_together():
             print np.amax(np.abs(vals-new_vals))/(k+j+1)/P, (k+j+1)
             assert np.amax(np.abs(vals-new_vals))/(k+j+1)/P < toll
 
+def test_length_constraint():
+    toll = 1e-5
+    nturns = 6.0
+    heigth = 1.0
+    radius = 1.0
+
+    # Spiral analytical expression
+    cx = lambda x: radius*exp(x)*sin(nturns*2*pi*x)
+    cy = lambda y: radius*2*exp(y)*cos(nturns*2*pi*y)
+    cz = lambda z: heigth*exp(z)*z
+
+    # BSpline parameters
+    n = 21
+    p = 3
+    # Number of least square points
+    n_ls = 140
+
+    # Open knot vector
+    knots = zeros(n+2*p)
+    knots[p:-p] = linspace(0,1,n)
+    knots[0:p] = 0
+    knots[-p::] = 1
+
+    vs = BsplineVectorSpace(p, knots)
+
+    # Least square parameter points
+    t = linspace(0,1,n_ls) 
+
+    # Least square points of the curve
+    F = array([cx(t), cy(t), cz(t)])
+
+    # Least square matrix
+    M = interpolation_matrix(vs, t)
+
+    # Control points and curve
+    CP = lstsq(M, F.T)[0]
+    arky_fixed = ArcLengthParametrizer(vs, CP, 10, 1)
+    CP_al_lf = np.asarray(arky_fixed.reparametrize())
+    new_arky_fixed = ArcLengthParametrizer(vs, CP_al_lf)
+    new_arky_fixed.reparametrize()
+    assert(np.abs(arky_fixed.lengths[0]-new_arky_fixed.lengths[0]) < toll)
 
 
+def test_more_length_constraints():
+    toll = 1e-5
+    nturns = 6.0
+    heigth = 1.0
+    radius = 1.0
+
+    # Spiral analytical expression
+    cx = lambda x: radius*exp(x)*sin(nturns*2*pi*x)
+    cy = lambda y: radius*2*exp(y)*cos(nturns*2*pi*y)
+    cz = lambda z: heigth*exp(z)*z
+
+    # BSpline parameters
+    n = 21
+    p = 3
+    # Number of least square points
+    n_ls = 140
+
+    # Open knot vector
+    knots = zeros(n+2*p)
+    knots[p:-p] = linspace(0,1,n)
+    knots[0:p] = 0
+    knots[-p::] = 1
+
+    vs = BsplineVectorSpace(p, knots)
+
+    # Least square parameter points
+    t = linspace(0,1,n_ls) 
+
+    # Least square points of the curve
+    F = array([cx(t), cy(t), cz(t)])
+
+    # Least square matrix
+    M = interpolation_matrix(vs, t)
+
+    # Control points and curve
+    CP = lstsq(M, F.T)[0]
+    CP2 = np.empty((CP.shape[0],2,CP.shape[1]))
+    CP2[:,0,:] = CP
+    CP2[:,1,:] = 2*CP
+    arky_fixed1 = ArcLengthParametrizer(vs, CP2, 10, 1)
+    arky_fixed2 = ArcLengthParametrizer(vs, CP2, 10, 2)
+    CP_al_lf1 = np.asarray(arky_fixed1.reparametrize())
+    CP_al_lf2 = np.asarray(arky_fixed2.reparametrize())
+    new_arky_fixed1 = ArcLengthParametrizer(vs, CP_al_lf1)
+    new_arky_fixed1.reparametrize()
+    new_arky_fixed2 = ArcLengthParametrizer(vs, CP_al_lf2)
+    new_arky_fixed2.reparametrize()
+    assert(np.abs(arky_fixed1.lengths[0]-new_arky_fixed1.lengths[0]) < toll)
+    assert(np.abs(arky_fixed1.lengths[1]-new_arky_fixed1.lengths[1]) < toll)
+    print arky_fixed1.lengths[1], new_arky_fixed2.lengths[0]
+    assert(np.abs(arky_fixed1.lengths[1]-new_arky_fixed2.lengths[0]) < toll)
+    assert(np.abs(arky_fixed1.lengths[1]-new_arky_fixed2.lengths[1]) < toll)
 
 
 
