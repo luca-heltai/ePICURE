@@ -12,5 +12,9 @@ def test_massmatrix():
             for k in range(2,10):
                 t=massmatrix(vs,k)
                 assert abs(v.dot(t.dot(v))-1.0)<10**(-10)
+                csc=massmatrix(vs,k,format="CSC")
+                csr=massmatrix(vs,k,format="CSR")
+                assert (t==csc).all() and (t==csr).all()
+                
 
 test_massmatrix()
