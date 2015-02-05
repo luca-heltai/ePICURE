@@ -4,11 +4,11 @@ import scipy.special as sp
 from scipy.interpolate import lagrange 
 from numpy.polynomial.chebyshev import chebgauss
 import sys
-from utilities.arc_lib import *
-from utilities.arclength import*
+from utilities import *
+from interfaces import *
+#from utilities.arclength import*
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from interfaces import *
 
 
 
