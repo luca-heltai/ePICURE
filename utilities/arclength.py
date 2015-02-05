@@ -15,10 +15,11 @@ class ArcLengthParametrizer(object):
     space dependent. If you have something time dependent you are asked to query
     this class time by time. We assume that the curve is parametrized from 0 to 1.
     """
-    def __init__(self, vector_space, init_control_points, arcfactor = 10,length_constraint = 0):
+    def __init__(self, vector_space, init_control_points,length_constraint = 0, arcfactor = 10):
 		"""The constructor needs an initital curve and we ask for a factor that we will use to 
 		numerically approximate the arclength, therefore we have called it arcfactor. We expect the
-		curve to be composed by a vector space and a control point array.
+		curve to be composed by a vector space and a control point array. The length_constraint 
+		specify the constraint on the curve length.
 		"""
 		self.all_init_control_points = np.asarray(init_control_points)
 		self.vector_space = AffineVectorSpace(vector_space)
