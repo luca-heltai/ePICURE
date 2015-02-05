@@ -3,3 +3,4 @@
 
 # C extensions
 *.so
+*.app
