@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+
+#SET BLENDER PATH
+BLENDER_PATH=/Applications/Blender/blender.app/Contents/MacOS/
+
+#SET THE LOCATION OF THE BLANDER PLAYER
+export BLENDER_PLAYER=/Applications/Blender/blenderplayer.app
+
+#SET THE LOCATION ON WHERE THE FILE MUST BE SAVED
+export SAVEPATH=/Users/deathquasar/Google\ Drive/MHCP/ePICURE/Blender_test/
+
+#SET THE FILENAME
+export FILENAME=test.app
+
+export CURRENTDIR=/Users/deathquasar/Google\ Drive/MHCP/ePICURE/blender/
+
+
+#OPTION FLAGS
+FLAGS=--background
+
+#RUN THE SCRIPT
+${BLENDER_PATH}blender --python interface_example.py
