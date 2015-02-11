@@ -1,4 +1,5 @@
 import numpy as np
+from itertools import product as cartesian_product
 
 class VectorSpace(object):
     """An abstract python interface used to describe *one dimensional
@@ -109,6 +110,63 @@ class VectorSpace(object):
         multiplying the VectorSpace with an integer. """
         return RepeatedVectorSpace(self, n)
         
+
+class TensorProduct(VectorSpace):
+    def __init__(self, space_list):
+        self.space_list = space_list
+        shape = []
+        self.n_dofs = 1
+        self.n_cells = 1
+        for i in space_list:
+            self.n_dofs *= i.n_dofs
+            self.n_cells *= i.n_cells
+            shape.append(i.n_dofs)
+        self.shape = tuple(shape)
+        
+    def basis(self, i):
+        self.check_index(i)
+        indx = np.unravel_index(i, self.shape)
+        def basis_i(x):
+            output = 1
+            for j in range(len(self.shape)):
+                output *= self.space_list[j].basis(indx[j])(x[j])
+            return output
+        return basis_i
+
+    def basis_der(self, i, d):
+        self.check_index(i)
+        indx = np.unravel_index(i, self.shape)
+        def basis_der_i(x):
+            output = 1
+            for j in range(len(self.shape)):
+                output *= self.space_list[j].basis_der(indx[j],d)(x[j])
+            return output
+        return basis_der_i
+
+    def basis_span(self, i):
+        self.check_index(i)
+        indx = np.unravel_index(i, self.shape)
+        min_indices = []
+        max_indices = []
+        for j in xrange(len(self.shape)):
+            min_indices.append(np.min(self.space_list[j].basis_span(indx[j])))
+            max_indices.append(np.max(self.space_list[j].basis_span(indx[j])))
+        i1 = np.ravel_multi_index(min_indices, self.shape)
+        i2 = np.ravel_multi_index(max_indices, self.shape)
+        return (i1, i2)
+
+    def cell_span(self, i):
+        cell_span_list = []
+        indx = np.unravel_index(i, self.shape)
+        output = []
+        cell_for_axis = [ self.space_list[j].cell_span(indx[j]) for j in range(len(indx))]
+        for multi_indx in cartesian_product(*cell_for_axis):
+            output.append(np.ravel_multi_index(multi_indx, self.shape))
+        return output
+
+
+
+
 class AffineVectorSpace(VectorSpace):
     """Affine transformation of a VectorSpace. Given a vector space, returns
     its affine transformation between a and b
