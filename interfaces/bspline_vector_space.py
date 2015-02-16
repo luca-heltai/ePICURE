@@ -139,4 +139,17 @@ class BsplineVectorSpace(VectorSpace):
         return np.frompyfunc(g, 1, 1)
 
 
+    def greville(self):
+        """Return the set of greville abscissa associated with this Bspline"""
+        k = self.knots
+        g = np.zeros(self.n_dofs)
+        for i in xrange(self.n_dofs):
+            g[i] = np.average(k[i+1:i+self.degree+1])
+        return g
+    
+class UniformBsplineVectorSpace(BsplineVectorSpace):
+    def __init__(self, p, nel):
+        nbasis = max(2, nel+1)
+        knots = np.r_[(p)*[0], np.linspace(0,1, nbasis), (p)*[1]] 
+        BsplineVectorSpace.__init__(self, p, knots)
 
