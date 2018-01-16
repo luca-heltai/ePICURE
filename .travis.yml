@@ -21,7 +21,7 @@ before_install:
 # Install packages
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib nose dateutil pandas statsmodels
-  - pip install atlas numpy scipy matplotlib nose dateutil pandas statsmodels
+  - pip install atlas numpy scipy matplotlib nose python-dateutil pandas statsmodels
   - pip install coveralls
   - ./setup.sh
  
