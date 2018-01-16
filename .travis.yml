@@ -1,10 +1,14 @@
 language: python
 notifications:
   email: false
+
+env:
+  - PYTHON_VERSION=3.6
  
 # Setup anaconda
 before_install:
   - sudo apt-get update
+  - sudo apt-get install gfortran
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -17,7 +21,7 @@ before_install:
   - conda info -a
 
   # Replace dep1 dep2 ... with your dependencies
-  - conda create -q -n test-environment python=3.6 atlas numpy scipy matplotlib nose pandas 
+  - conda create -q -n test-environment python=$PYTHON_VERSION atlas numpy scipy matplotlib nose pandas 
   - source activate test-environment
   - pip install https://bitbucket.org/dalcinl/igakit/get/default.tar.gz
   - pip install coveralls
