@@ -24,7 +24,7 @@ nframes = 200
 ################
 
 # In this part we define the vector space and the torsion and curvature of the curve
-print 
+print ()
 vs_base = UniformLagrangeVectorSpace(9)
 vs = AffineVectorSpace(vs_base)
 x = np.linspace(0,1,1025)
@@ -88,4 +88,4 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
                                frames=nframes, interval=20, blit=True)
 anim.save('animation.mp4', fps=10, extra_args=['-vcodec', 'libx264'])
 
-print  "Done!\n"
+print ("Done!\n")

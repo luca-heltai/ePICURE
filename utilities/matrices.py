@@ -14,7 +14,7 @@ def interpolation_matrix(vs, points, d=0):
     # M_ij := v_j(q_i)
     col=points.reshape((-1,1))
     M = np.zeros((len(points), vs.n_dofs), order='F')
-    for i in xrange(vs.n_dofs):
+    for i in range(vs.n_dofs):
         # advanced slicing... only compute those points which are
         # different from zero
         ia,ib = vs.basis_span(i)
@@ -45,7 +45,7 @@ def massmatrix(vs,nq,quadfun=np.polynomial.legendre.leggauss, format="FULL", int
     """
     (qst,wst)=quadfun(nq)
     cum={"DOK":lambda : dok_matrix((vs.n_dofs,vs.n_dofs)), "LIL":lambda : lil_matrix((vs.n_dofs,vs.n_dofs))}[internal]()
-    for lcell in xrange(vs.n_cells):
+    for lcell in range(vs.n_cells):
         a,b=vs.cells[lcell],vs.cells[lcell+1]
         q,w=((a+b)+(b-a)*qst)/2,(b-a)*wst/2
         fnts=vs.cell_span(lcell)

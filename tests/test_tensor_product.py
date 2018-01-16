@@ -12,7 +12,7 @@ def test_tensor_product_1Element():
         assert False, 'Expecting Failure!'
     except:
         pass
-    print ts.basis(0)(array([.5]))
+    print (ts.basis(0)(array([.5])))
     assert ts.basis(0)(array([.5])) == 1
     
     try:
@@ -39,9 +39,9 @@ def test_tensor_product_evaluations():
     vs1 = UniformLagrangeVectorSpace(2)
     vs2 = UniformLagrangeVectorSpace(3)
     ts = TensorProduct([vs1,vs2])
-    print ts.n_dofs
-    print vs1.n_dofs
-    print vs2.n_dofs
+    print (ts.n_dofs)
+    print (vs1.n_dofs)
+    print (vs2.n_dofs)
     assert ts.n_dofs == vs1.n_dofs * vs2.n_dofs
     assert ts.n_cells == vs1.n_cells * vs2.n_cells
 

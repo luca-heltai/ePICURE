@@ -36,12 +36,12 @@ def test_arclength_half_circle():
     dummy_arky_3d = ArcLengthParametrizer(vsl, control_points_3d)
     length2d = dummy_arky_2d.compute_arclength()[-1,1]
     length3d = dummy_arky_3d.compute_arclength()[-1,1]
-#    print length2d 
-#    print n * np.sqrt(2)
+#    print (length2d)
+#    print (n * np.sqrt(2))
     l2 = np.pi * R
     l3 = 2 * np.pi * np.sqrt(R * R + (P / (2 * np.pi)) * (P / (2 * np.pi)))
-    print length2d, l2
-    print length3d, l3
+    print (length2d, l2)
+    print (length3d, l3)
     assert (length2d - l2) < toll
     assert (length3d - l3) < toll
 #   assert True
@@ -135,7 +135,7 @@ def test_known_parametrization():
     n = 10
     ii = np.linspace(0,1,n+1)
     control_points_3d = np.asarray(np.zeros([n+1,3]))#[np.array([R*np.cos(5*i * np.pi / (n + 1)), R*np.sin(5*i * np.pi / (n + 1)), P * i]) for i in range(0, n+1)]
-    print control_points_3d.shape
+    print (control_points_3d.shape)
     control_points_3d[:,0] = np.array([R*np.cos(5*i * np.pi / (n + 1))for i in ii])
     control_points_3d[:,1] = np.array([R*np.sin(5*i * np.pi / (n + 1))for i in ii])
     control_points_3d[:,2] = np.array([P*i for i in range(n+1)])
@@ -151,7 +151,7 @@ def test_known_parametrization():
     #print vals
     new_vals = vsl.element(new_control_points_3d)(tt)
     #print vals.shape, new_vals.shape
-    print np.amax((np.abs(vals-new_vals)))
+    print (np.amax((np.abs(vals-new_vals))))
     assert np.amax(np.abs(control_points_3d-new_control_points_3d))/P < toll
 
     #assert True
@@ -185,7 +185,7 @@ def test_more_known_parametrization_together():
         for j in range(n_2):
             vals = vsl.element(control_points_3d)(tt)
             new_vals = vsl.element(new_control_points_3d)(tt)
-            print np.amax(np.abs(vals-new_vals))/(k+j+1)/P, (k+j+1)
+            print (np.amax(np.abs(vals-new_vals))/(k+j+1)/P, (k+j+1))
             assert np.amax(np.abs(vals-new_vals))/(k+j+1)/P < toll
 
 def test_length_constraint():
@@ -280,7 +280,7 @@ def test_more_length_constraints():
     new_arky_fixed2.reparametrize()
     assert(np.abs(arky_fixed1.lengths[0]-new_arky_fixed1.lengths[0]) < toll)
     assert(np.abs(arky_fixed1.lengths[1]-new_arky_fixed1.lengths[1]) < toll)
-    print arky_fixed1.lengths[1], new_arky_fixed2.lengths[0]
+    print (arky_fixed1.lengths[1], new_arky_fixed2.lengths[0])
     assert(np.abs(arky_fixed1.lengths[1]-new_arky_fixed2.lengths[0]) < toll)
     assert(np.abs(arky_fixed1.lengths[1]-new_arky_fixed2.lengths[1]) < toll)
 

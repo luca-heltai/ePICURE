@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pylab as plt
 
 def test_massmatrix():
-    print "This should takes ~8s in a core i5"
+    print ("This should takes ~8s in a core i5")
     for i in range(10):
         for j in range(2,i):
             vs=IteratedVectorSpace(UniformLagrangeVectorSpace(j), np.linspace(0,1,i))
