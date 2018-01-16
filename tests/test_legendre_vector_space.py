@@ -14,7 +14,7 @@ def test_continuous_legendre_interface():
             pass
         xi = vector_space.collocationJacobi(0,0,n)
         eps = 1.e-11
-        for i in xrange(n):
+        for i in range(n):
             assert vector_space.basis(i)(xi[i]) - 1. < eps
 
         try:
@@ -27,7 +27,7 @@ def test_continuous_legendre_interface():
                 # useful for a visual check of basis functions
                 xi = np.linspace(0,1,2**8)
                 f1 = plt.figure()
-                for i in xrange(n):
+                for i in range(n):
                     plt.plot(xi,[vector_space.basis(i)(j) for j in xi],'-')
                 plt.plot(vector_space.collocationJacobi(0,0,n),np.zeros(n),'ro')
                 plt.show()
@@ -45,8 +45,8 @@ def test_discontinuous_legendre_interface():
             pass
         xi = vector_space.collocationJacobi(0,0,n)
         eps = 1e-11
-        for i in xrange(n):
-		assert abs(vector_space.basis(i)(xi[i]) - 1.) < eps
+        for i in range(n):
+            assert abs(vector_space.basis(i)(xi[i]) - 1.) < eps
 
         try:
             vector_space.basis(0)(1.2)

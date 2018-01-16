@@ -1068,6 +1068,7 @@ static PyObject * _Bas_bspbezdecom(PyObject *self, PyObject *args)
     return Py_BuildValue("O", ic);
 }
 
+/*
 static PyMethodDef _Bas_methods[] =
 {
     {"bincoeff", _Bas_bincoeff, METH_VARARGS, bincoeff__doc__},
@@ -1080,7 +1081,7 @@ static PyMethodDef _Bas_methods[] =
     {"basisfuns", _Bas_basisfuns, METH_VARARGS, basisfuns__doc__},
     {"dersbasisfuns", _Bas_dersbasisfuns, METH_VARARGS, dersbasisfuns__doc__},
     {"findspan", _Bas_findspan, METH_VARARGS, findspan__doc__},
-    {NULL, NULL}
+    {NULL, NULL, 0, NULL}
 };
 
 PyMODINIT_FUNC init_Bas(void)
@@ -1089,4 +1090,39 @@ PyMODINIT_FUNC init_Bas(void)
     m = Py_InitModule3("_Bas", _Bas_methods, _Bas_module__doc__);
     import_array();
 }
-    
+PyMODINIT_FUNC PyInit_Bas(void) {
+    Py_Initialize();
+    return PyModule_Create(&_Bas_methods);
+}
+*/
+
+
+
+static PyMethodDef _Bas_methods[] =
+{
+    {"bincoeff", _Bas_bincoeff, METH_VARARGS, bincoeff__doc__},
+    {"bspeval", _Bas_bspeval, METH_VARARGS, bspeval__doc__},
+    {"bspdeval", _Bas_bspdeval, METH_VARARGS, bspdeval__doc__},
+    {"bspkntins", _Bas_bspkntins, METH_VARARGS, bspkntins__doc__},
+    {"bspdegelev", _Bas_bspdegelev, METH_VARARGS, bspdegelev__doc__},
+    {"bspbezdecom", _Bas_bspbezdecom, METH_VARARGS, bspbezdecom__doc__},
+    // se:
+    {"basisfuns", _Bas_basisfuns, METH_VARARGS, basisfuns__doc__},
+    {"dersbasisfuns", _Bas_dersbasisfuns, METH_VARARGS, dersbasisfuns__doc__},
+    {"findspan", _Bas_findspan, METH_VARARGS, findspan__doc__},
+    {NULL, NULL, 0, NULL}
+};
+
+static struct PyModuleDef _Bas =
+{
+    PyModuleDef_HEAD_INIT,
+    "NURBS", /* name of module */
+    "NURBS", /* module documentation, may be NULL */
+    -1,   /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+    _Bas_methods
+};
+
+PyMODINIT_FUNC PyInit__Bas(void)
+{
+    return PyModule_Create(&_Bas);
+}

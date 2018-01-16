@@ -67,7 +67,7 @@ class VectorSpace(object):
         sy = np.shape(c[0])+np.shape(x)
         y = np.zeros(sy)
         # TBD: make this function aware of locality
-        for i in xrange(self.n_dofs):
+        for i in range(self.n_dofs):
             y = y + np.outer(c[i], self.basis(i)(x)).reshape(sy)
         return y
     
@@ -78,7 +78,7 @@ class VectorSpace(object):
         sy = np.shape(c[0])+np.shape(x)
         y = np.zeros(sy)
         # TBD: make this function aware of locality
-        for i in xrange(self.n_dofs):
+        for i in range(self.n_dofs):
             y += np.outer(c[i], self.basis_der(i,d)(x)).reshape(sy)
         return y
         
@@ -95,15 +95,15 @@ class VectorSpace(object):
         return lambda x: self.eval_der(c, d, x)
 
     def print_info(self):
-        print '============================================================'
-        print 'Name: '+type(self).__name__
-        print 'N dofs: {}, N cells: {}, \nCell boundaries: {}'.format(self.n_dofs, self.n_cells, self.cells)
-        print 'Shared dofs on cell boundaries: {}'.format(self.n_dofs_per_end_point)
-        for i in xrange(self.n_cells):
-            print '------------------------------------------------------------'
-            print 'Cell {}: [{},{}]'.format(i, self.cells[i], self.cells[i+1])
-            print 'Nonzero basis: {}'.format(self.cell_span(i))
-        print '------------------------------------------------------------'
+        print ('============================================================')
+        print ('Name: '+type(self).__name__)
+        print ('N dofs: {}, N cells: {}, \nCell boundaries: {}'.format(self.n_dofs, self.n_cells, self.cells))
+        print ('Shared dofs on cell boundaries: {}'.format(self.n_dofs_per_end_point))
+        for i in range(self.n_cells):
+            print ('------------------------------------------------------------')
+            print ('Cell {}: [{},{}]'.format(i, self.cells[i], self.cells[i+1]))
+            print ('Nonzero basis: {}'.format(self.cell_span(i)))
+        print ('------------------------------------------------------------')
 
     def __imul__(self, n):
         """This allows the construction of repeated VectorSpaces by simply
@@ -148,7 +148,7 @@ class TensorProduct(VectorSpace):
         indx = np.unravel_index(i, self.shape)
         min_indices = []
         max_indices = []
-        for j in xrange(len(self.shape)):
+        for j in range(len(self.shape)):
             min_indices.append(np.min(self.space_list[j].basis_span(indx[j])))
             max_indices.append(np.max(self.space_list[j].basis_span(indx[j])))
         i1 = np.ravel_multi_index(min_indices, self.shape)
@@ -245,7 +245,7 @@ class IteratedVectorSpace(VectorSpace):
         # element, which is repeated
         loc_cells = vs.cells[0:-1]
         self.cells = np.array([])
-        for i in xrange(len(span)-1):
+        for i in range(len(span)-1):
             self.cells = np.append(self.cells, loc_cells*(span[i+1]-span[i])+span[i])
         self.cells = np.append(self.cells, [span[-1]])
         assert len(self.cells)-1 == self.n_cells, \

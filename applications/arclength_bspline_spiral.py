@@ -44,7 +44,7 @@ CP = lstsq(M, F.T)[0]
 arky = ArcLengthParametrizer(vs, CP)
 CP_al = np.asarray(arky.reparametrize())
 curve = vs.element(CP)
-print CP.shape
+print (CP.shape)
 curve_al = vs.element(CP_al)
 arky_fixed = ArcLengthParametrizer(vs, CP, 10, 1)
 CP_al_lf = np.asarray(arky_fixed.reparametrize())
@@ -59,9 +59,9 @@ plt.legend()
 plt.savefig('BSplinearclength.png')
 plt.close()
 plt.close()
-#print new_arky_fixed.points_s[-1,1], arky.points_s[-1,1]
-print CP.shape, type(CP) 
-print CP_al.shape, type(CP_al)
+#print (new_arky_fixed.points_s[-1,1], arky.points_s[-1,1])
+print (CP.shape, type(CP))
+print (CP_al.shape, type(CP_al))
 # Approximated curve at points
 C = curve(t)
 C_al = curve(t)

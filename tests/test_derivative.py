@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pylab as plt
 
 def check_interpolation_derivative(vs, f, df, d=1, N=20):
-    print 'Checking ', type(vs).__name__ , 'derivative', d
+    print ('Checking ', type(vs).__name__ , 'derivative', d)
 
     s = np.linspace(vs.cells[0], vs.cells[-1], vs.n_dofs)
     curve = f(s)
@@ -16,7 +16,7 @@ def check_interpolation_derivative(vs, f, df, d=1, N=20):
 
     eps=1e-10
     c = vs.cells[-1]
-    print 'Df^',d,'(', c, ') =', df(c), ' - approx - ', dx(c)
+    print ('Df^',d,'(', c, ') =', df(c), ' - approx - ', dx(c))
     assert (abs(x(times) - f(times))<eps).all()
     assert (abs(dx(times) - df(times))<eps).all()
 
@@ -38,7 +38,7 @@ def test_derivative():
             lambda x: 12*x**2]
 
     
-    for i in xrange(len(f)):
+    for i in range(len(f)):
         vs = UniformLagrangeVectorSpace(i+2)
         check_interpolation_derivative(vs, f[i], df[i])
         check_interpolation_derivative(vs, f[i], ddf[i], 2)

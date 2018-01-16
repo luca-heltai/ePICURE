@@ -1,6 +1,6 @@
 import numpy as np
 from interfaces.vector_space import VectorSpace
-from utilities._Bas import basisfuns, dersbasisfuns, findspan
+from _Bas import basisfuns, dersbasisfuns, findspan
 
 class BsplineVectorSpace(VectorSpace):
     """A python interface used to describe *one dimensional Bspline basis
@@ -35,7 +35,7 @@ class BsplineVectorSpace(VectorSpace):
         j = 1
         mults = list()
         
-        for i in xrange(1, knots.shape[0]):
+        for i in range(1, knots.shape[0]):
             if knots[i] == knots[i-1]:
                 j += 1
             else:
@@ -63,10 +63,10 @@ class BsplineVectorSpace(VectorSpace):
         assert i < self.n_cells
 
         n = 0
-        for j in xrange(i+1):
+        for j in range(i+1):
             n += self.mults[j]
         
-        non_zero_bases = [n - self.degree - 1 + j for j in xrange(self.degree+1)]
+        non_zero_bases = [n - self.degree - 1 + j for j in range(self.degree+1)]
         
         return np.asarray(non_zero_bases, np.int_)
 
@@ -102,16 +102,16 @@ class BsplineVectorSpace(VectorSpace):
         the multiplicity of the knots -1 untill the first knot of the current interval."""
         knot = self.knots[knot_interval]
         n = 0
-        for j in xrange(len(self.cells)):
+        for j in range(len(self.cells)):
             if self.cells[j] == knot:
                 n = j
         
         summation = 0
-        for j in xrange(n+1):
+        for j in range(n+1):
             summation += self.mults[j]-1
 
         non_zero_bases = self.internal_cell_span(knot_interval - summation)
-        for j in xrange(self.degree+1):
+        for j in range(self.degree+1):
             if non_zero_bases[j] == i:
                 return j
         # By default, return degree
@@ -143,7 +143,7 @@ class BsplineVectorSpace(VectorSpace):
         """Return the set of greville abscissa associated with this Bspline"""
         k = self.knots
         g = np.zeros(self.n_dofs)
-        for i in xrange(self.n_dofs):
+        for i in range(self.n_dofs):
             g[i] = np.average(k[i+1:i+self.degree+1])
         return g
     

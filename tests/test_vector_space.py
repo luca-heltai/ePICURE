@@ -16,4 +16,3 @@ def test_vector_space_interface():
         assert False, 'Expecting Failure!'
     except:
         pass
-    

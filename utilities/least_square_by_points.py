@@ -10,7 +10,7 @@ def least_square_by_points(vs, points, q):
     """
     n = vs.n_dofs
     m = len(points)
-    print len(q), len(points), points.shape
+    print (len(q), len(points), points.shape)
     assert len(q) == m, \
            'The number of points must be the same as the provided parameter subdivision'
 
