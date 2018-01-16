@@ -17,7 +17,7 @@ before_install:
   - conda info -a
 
   # Replace dep1 dep2 ... with your dependencies
-  - conda create -q -n test-environment python=3.6 atlas numpy scipy matplotlib nose dateutil pandas 
+  - conda create -q -n test-environment python=3.6 atlas numpy scipy matplotlib nose pandas 
   - source activate test-environment
   - pip install https://bitbucket.org/dalcinl/igakit/get/default.tar.gz
   - pip install coveralls
