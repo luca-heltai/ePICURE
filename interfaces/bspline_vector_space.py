@@ -1,6 +1,8 @@
 import numpy as np
 from interfaces.vector_space import VectorSpace
-from _Bas import basisfuns, dersbasisfuns, findspan
+from igakit.igalib import bsp
+from igakit.cad import line
+
 
 class BsplineVectorSpace(VectorSpace):
     """A python interface used to describe *one dimensional Bspline basis
@@ -8,14 +10,18 @@ class BsplineVectorSpace(VectorSpace):
 
     The base class constructs the constant vector space.
     """
-    def __init__(self, degree=0, knots=[0., 1.]):
+    def __init__(self, degree=1, knots=[0., 1.]):
         """ Pure interface class. It generates the constant on [0,1] if no arguments are provided. """
         assert degree >= 0
         assert len(knots) > 1
         assert knots[0] != knots[-1]
-        
+
+        self.unit_interval = line()
+        self.unit_interval.elevate(0,degree - self.unit_interval.degree[0])
         self.degree = degree
-        self.knots = np.asarray(knots, np.float)
+        self.knots = self.unit_interval.knots[0]
+        print (self.knots,self.unit_interval.degree)
+        #self.knots = np.asarray(knots, np.float)
         self.cells = np.unique(self.knots)
         self.n_knots = len(self.knots)
         self.mults = self.compute_mults(self.knots)
@@ -123,8 +129,10 @@ class BsplineVectorSpace(VectorSpace):
         self.check_index(i)
         t = self.basis_span(i)
         # If the point is outside the support of the i-th basis function it returns 0.
-        g = lambda x: basisfuns(self.find_span(x), self.degree, x, 
-            self.knots)[self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        #g = lambda x: basisfuns(self.find_span(x), self.degree, x,
+        #    self.knots)[self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        g = lambda x: bsp.EvalBasisFuns(self.degree, self.knots, x)[self.map_basis_cell(i, self.find_span(x))]\
+            if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
         return np.frompyfunc(g, 1, 1)
 
 
@@ -134,8 +142,11 @@ class BsplineVectorSpace(VectorSpace):
         t = self.basis_span(i)
         # If the point is outside the support of the i-th basis function it returns 0.
         # We take the d-th row of the matrix returned by dersbasisfuns
-        g = lambda x: dersbasisfuns(self.degree, self.knots, x, self.find_span(x),
-            d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        #g = lambda x: dersbasisfuns(self.degree, self.knots, x, self.find_span(x),
+        #    d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
+        assert d <= 2
+        g = lambda x: bsp.EvalBasisFunsDers(self.degree, self.knots, x, d)[d][self.map_basis_cell(i, self.find_span(x))]\
+            if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
         return np.frompyfunc(g, 1, 1)
 
 

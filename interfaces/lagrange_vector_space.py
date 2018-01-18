@@ -23,7 +23,7 @@ class LagrangeVectorSpace(VectorSpace):
 
     def basis(self, i):
         self.check_index(i)
-        w = self.qpoints*0
+        w = np.zeros(self.n_dofs)
         w[i] = 1.0
         return lagrange(self.qpoints, w)
 

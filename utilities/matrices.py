@@ -51,8 +51,8 @@ def massmatrix(vs,nq,quadfun=np.polynomial.legendre.leggauss, format="FULL", int
         fnts=vs.cell_span(lcell)
         nfnts=len(fnts)
         fq=np.zeros((nfnts,nq))
-        for i in range(nfnts):                                          #funtion evaluation is a heavy operation do it one time
-            fq[i]=vs.basis(fnts[i])(q)
+        for i in range(nfnts):                                         #funtion evaluation is a heavy operation do it one time
+            fq[i] = vs.basis(fnts[i])(q)
         out=np.dot(fq*w,fq.transpose())                                 #all in only one step
         for rout, rcum in zip(out, fnts):
             for vout, ccum in zip(rout, fnts):
