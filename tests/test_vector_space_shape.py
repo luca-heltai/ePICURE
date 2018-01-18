@@ -66,7 +66,7 @@ def evaluate_vector_space(vs):
 
 
 def test_vector_spaces():
-    vs = VectorSpace();
+    vs = VectorSpace()
     evaluate_vector_space(vs)
     vs = UniformLagrangeVectorSpace(2)
     evaluate_vector_space(vs)
