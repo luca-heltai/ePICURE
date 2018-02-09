@@ -13,11 +13,10 @@ class BsplineVectorSpace(VectorSpace):
     def __init__(self, degree=0, knots=[]):
         """ Pure interface class. It generates the constant on [0,1] if no arguments are provided. """
         assert degree >= 0
-        assert len(knots) > 1
         assert knots[0] != knots[-1]
 
         self.degree = degree
-        if knots.size == 0:
+        if len(knots) == 0:
             self.knots = (self.degree + 1) * [0] + (self.degree + 1) * [1]
         else:
             self.knots = knots
