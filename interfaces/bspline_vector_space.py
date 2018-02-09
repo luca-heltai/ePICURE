@@ -10,18 +10,14 @@ class BsplineVectorSpace(VectorSpace):
 
     The base class constructs the constant vector space.
     """
-    def __init__(self, degree=0, knots=[0., 1.]):
+    def __init__(self, degree=0, knots=[]):
         """ Pure interface class. It generates the constant on [0,1] if no arguments are provided. """
         assert degree >= 0
         assert len(knots) > 1
         assert knots[0] != knots[-1]
 
-        self.unit_interval = line()
-        self.unit_interval.elevate(0,degree - self.unit_interval.degree[0])
         self.degree = degree
-        self.knots = self.unit_interval.knots[0]
-        print (self.knots,self.unit_interval.degree)
-        #self.knots = np.asarray(knots, np.float)
+        self.knots = (self.degree + 1) * [0] + (self.degree + 1) * [1]
         self.cells = np.unique(self.knots)
         self.n_knots = len(self.knots)
         self.mults = self.compute_mults(self.knots)
