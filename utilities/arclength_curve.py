@@ -39,8 +39,8 @@ class ArcLenghtCurve(object):
     def first_derivatives(self):
         """ If self.gamma is defined this method returns first, second,
         and third derivative of the curve."""
-        assert (self.coords != ''), \
-                "self.coords is not defined."
+        assert (self.coords.size != 0), \
+            "self.coords is not defined."
         self.ds   = self.vs.element_der(self.coords,1)
         self.dds  = self.vs.element_der(self.coords,2)
         self.ddds = self.vs.element_der(self.coords,3)

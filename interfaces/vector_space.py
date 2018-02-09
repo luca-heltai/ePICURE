@@ -75,11 +75,11 @@ class VectorSpace(object):
         assert len(c) == self.n_dofs, \
           'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        sy = np.shape(c[0])+np.shape(x)
+        sy = np.shape(c[0]) + np.shape(x)
         y = np.zeros(sy)
         # TBD: make this function aware of locality
         for i in range(self.n_dofs):
-            y += np.outer(c[i], self.basis_der(i,d)(x)).reshape(sy)
+            y = y + np.outer(c[i], self.basis_der(i, d)(x)).reshape(sy)
         return y
         
     def element(self, c):
