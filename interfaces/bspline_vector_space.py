@@ -10,7 +10,7 @@ class BsplineVectorSpace(VectorSpace):
 
     The base class constructs the constant vector space.
     """
-    def __init__(self, degree=1, knots=[0., 1.]):
+    def __init__(self, degree=0, knots=[0., 1.]):
         """ Pure interface class. It generates the constant on [0,1] if no arguments are provided. """
         assert degree >= 0
         assert len(knots) > 1
@@ -144,7 +144,7 @@ class BsplineVectorSpace(VectorSpace):
         # We take the d-th row of the matrix returned by dersbasisfuns
         #g = lambda x: dersbasisfuns(self.degree, self.knots, x, self.find_span(x),
         #    d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
-        assert d <= 2
+        #assert d <= 2, "igakit s"
         g = lambda x: bsp.EvalBasisFunsDers(self.degree, self.knots, x, d)[d][self.map_basis_cell(i, self.find_span(x))]\
             if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
         return np.frompyfunc(g, 1, 1)
