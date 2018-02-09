@@ -1,7 +1,7 @@
 import numpy as np
 from interfaces.vector_space import VectorSpace
 from interfaces.bspline_vector_space import BsplineVectorSpace
-from _Bas import basisfuns, dersbasisfuns, findspan
+#from _Bas import basisfuns, dersbasisfuns, findspan
 
 class BernsteinVectorSpace(BsplineVectorSpace):
     """A python interface used to describe *one dimensional Bernstein basis

@@ -22,7 +22,7 @@ class ArcLenghtCurve(object):
     def from_lambda_to_coords(self, s_space=np.linspace(0,1,1025)):
         """This method allows us to pass from lambda representation to
         coords representation of self.gamma."""
-        assert (self.gamma.size != 0), \
+        assert (self.gamma != ''), \
                 "self.gamma is not defined."
         # calculate the dimension of the space given the curve
         gamma = lambda s: self.gamma(s).T
@@ -46,7 +46,7 @@ class ArcLenghtCurve(object):
         self.ddds = self.vs.element_der(self.coords,3)
 
     def first_derivative_modulus(self):
-        assert (self.gamma.size != 0), \
+        assert (self.gamma != ''), \
             "self.gamma is not defined."
         self.first_derivatives()
         print (((self.ds(self.s_space).T).dot(self.ds(self.s_space))).diagonal())

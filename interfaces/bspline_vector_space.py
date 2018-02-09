@@ -144,7 +144,7 @@ class BsplineVectorSpace(VectorSpace):
         # We take the d-th row of the matrix returned by dersbasisfuns
         #g = lambda x: dersbasisfuns(self.degree, self.knots, x, self.find_span(x),
         #    d)[d][self.map_basis_cell(i, self.find_span(x))] if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
-        #assert d <= 2, "igakit s"
+        assert d <= 3, "igakit supports up to the third derivative"
         g = lambda x: bsp.EvalBasisFunsDers(self.degree, self.knots, x, d)[d][self.map_basis_cell(i, self.find_span(x))]\
             if x >= self.cells[t[0]] and x <= self.cells[t[1]] else 0
         return np.frompyfunc(g, 1, 1)
