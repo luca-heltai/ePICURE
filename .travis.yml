@@ -4,6 +4,13 @@ python:
 notifications:
   email: false
  
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gfortran
+
 # Setup anaconda
 before_install:
   - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -22,6 +29,7 @@ before_install:
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib nose dateutil pandas statsmodels
   - pip install atlas numpy scipy matplotlib nose python-dateutil pandas statsmodels
+  - pip install https://bitbucket.org/dalcinl/igakit/get/default.tar.gz
   - pip install coveralls
   - ./setup.sh
  

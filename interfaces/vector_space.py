@@ -75,11 +75,11 @@ class VectorSpace(object):
         assert len(c) == self.n_dofs, \
           'Incompatible vector. It should have length {}. It has lenght {}'.format(self.n_dofs, len(c))
         # Find the cell where x lies:
-        sy = np.shape(c[0])+np.shape(x)
+        sy = np.shape(c[0]) + np.shape(x)
         y = np.zeros(sy)
         # TBD: make this function aware of locality
         for i in range(self.n_dofs):
-            y += np.outer(c[i], self.basis_der(i,d)(x)).reshape(sy)
+            y = y + np.outer(c[i], self.basis_der(i, d)(x)).reshape(sy)
         return y
         
     def element(self, c):
@@ -271,7 +271,7 @@ class IteratedVectorSpace(VectorSpace):
           'Internal error! {} ! > 0'.format(self.vs.n_dofs-self.n_dofs_per_end_point) 
 
         n_unique = (self.vs.n_dofs-self.n_dofs_per_end_point)
-        b = int(np.floor(i/n_unique))
+        b = i//n_unique
         j = np.mod(i, n_unique)
         ret = []
         if j < self.n_dofs_per_end_point and b>0:
@@ -335,7 +335,7 @@ class IteratedVectorSpace(VectorSpace):
 
     def cell_span(self, i):
         """ An array of indices containing the basis functions which are non zero on the i-th cell """
-        b = i/self.vs.n_cells
+        b = i//self.vs.n_cells
         j = np.mod(i, self.vs.n_cells)
         startid = b*(self.vs.n_dofs-self.vs.n_dofs_per_end_point)
         local_ids = self.vs.cell_span(j)

@@ -16,6 +16,8 @@ def least_square(f, vs, q):
     
     M = interpolation_matrix(vs, q)
     b = f(np.array(q))
-    c = lstsq(M, b)[0]
+    # here the new default for the cutoff of small parameters will not work
+    # to use the old default (cutoff = machine epsilon), set rcond = -1
+    c = lstsq(M, b, rcond=-1)[0]
 
     return c

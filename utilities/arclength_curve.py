@@ -32,15 +32,15 @@ class ArcLenghtCurve(object):
     def from_coords_to_lambda(self):
         """This method allows us to pass from coords representation to
         lambda representation of self.gamma."""
-        assert (self.coords != ''), \
-                "self.coords is not defined."
+        assert (self.coords.size != 0), \
+               "self.coords is not defined."
         self.gamma = self.vs.element(self.coords)
 
     def first_derivatives(self):
         """ If self.gamma is defined this method returns first, second,
         and third derivative of the curve."""
-        assert (self.coords != ''), \
-                "self.coords is not defined."
+        assert (self.coords.size != 0), \
+            "self.coords is not defined."
         self.ds   = self.vs.element_der(self.coords,1)
         self.dds  = self.vs.element_der(self.coords,2)
         self.ddds = self.vs.element_der(self.coords,3)
@@ -121,7 +121,8 @@ class ArcLenghtCurve(object):
 
         def Matrix(frenet,s):
             MMR = lambda s: [KT(s)[i].dot(frenet.reshape(3,3,dim).T.transpose(0,2,1)[i]) for i in range(dim)]
-            return np.array(zip(MMR(s))).reshape(dim,-1).T.reshape(-1,)
+            #return np.array(zip(MMR(s))).reshape(dim,-1).T.reshape(-1,)
+            return np.array(MMR(s)).reshape(dim,-1).T.reshape(-1,)
 
         frenet = odeint(Matrix, frenet0, self.s_space)
 
@@ -176,13 +177,13 @@ class ALCFromCoords(ArcLenghtCurve):
     def __init__(self, vs, coords):
         self.vs = vs
         self.coords = coords
-        self.s_space = np.linspace(0,1,1025)
+        self.s_space = np.linspace(0.0,1.0,num=1025)
         self.from_coords_to_lambda()
 
 class ALCFromLambda(ArcLenghtCurve):
     """ Given a vectorial lambda function this method returns the coordinates
         with respect to the basis of the vector space."""
-    def __init__(self, vs, gamma, s_space=np.linspace(0,1,1025)):
+    def __init__(self, vs, gamma, s_space=np.linspace(0.0,1.0,num=1025)):
         self.coords = ''
         self.vs = vs
         self.s_space=s_space
@@ -199,7 +200,7 @@ class ALCFromKappaAndTau(ArcLenghtCurve):
                     x0 = np.array([0,0,0]),\
                     frenet0 = np.eye(3,3).reshape((-1,)),\
                     L = 1,\
-                    s_space = np.linspace(0,1,1025)):
+                    s_space = np.linspace(0.0,1.0,num=1025)):
         self.coords = ''
         self.kappa = kappa
         self.tau = tau
