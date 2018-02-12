@@ -223,7 +223,7 @@ def test_length_constraint():
     M = interpolation_matrix(vs, t)
 
     # Control points and curve
-    CP = lstsq(M, F.T)[0]
+    CP = lstsq(M, F.T, rcond=-1)[0]
     arky_fixed = ArcLengthParametrizer(vs, CP, 1)
     CP_al_lf = np.asarray(arky_fixed.reparametrize())
     new_arky_fixed = ArcLengthParametrizer(vs, CP_al_lf)
@@ -266,7 +266,7 @@ def test_more_length_constraints():
     M = interpolation_matrix(vs, t)
 
     # Control points and curve
-    CP = lstsq(M, F.T)[0]
+    CP = lstsq(M, F.T, rcond=None)[0]
     CP2 = np.empty((CP.shape[0],2,CP.shape[1]))
     CP2[:,0,:] = CP
     CP2[:,1,:] = 2*CP

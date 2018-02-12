@@ -96,7 +96,7 @@ class BsplineVectorSpace(VectorSpace):
         elif parametric_point == self.cells[-1]:
             return (self.n_knots-self.mults[-1]-1)
         else:
-            return (np.where(self.knots <= parametric_point)[0][-1])
+            return (np.where(np.asarray(self.knots) <= parametric_point)[0][-1])
 
 
     def map_basis_cell(self, i, knot_interval):

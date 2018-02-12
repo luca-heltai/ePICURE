@@ -166,7 +166,7 @@ class ArcLengthParametrizer(object):
         """In this method we solve the LS system assembled before. The result should be the new knot_vector that
         will form the arclength reparametrized curve."""
         #print (self.matrixB.shape, self.rhsinit.shape)
-        res = np.linalg.lstsq(self.matrixB, self.rhsinit, rcond=None)
+        res = np.linalg.lstsq(self.matrixB, self.rhsinit, rcond=-1)
         #print (res[0])
         return res[0]
 
