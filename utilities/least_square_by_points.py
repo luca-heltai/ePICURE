@@ -19,6 +19,6 @@ def least_square_by_points(vs, points, q):
     
     M = interpolation_matrix(vs, q)
     b = points
-    c = lstsq(M, b, rcond=None)[0]
+    c = lstsq(M, b, rcond=-1)[0]
 
     return c

@@ -38,6 +38,6 @@ def test_ls_points():
     M = interpolation_matrix(vs, t)
 
     # Control points and curve
-    CP = lstsq(M, F.T)[0]
+    CP = lstsq(M, F.T, rcond=-1)[0]
     CP2 = least_square_by_points(vs, F.T, t)
     assert(np.linalg.norm(CP-CP2)<toll)
