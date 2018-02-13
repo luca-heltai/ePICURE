@@ -268,7 +268,7 @@ class IteratedVectorSpace(VectorSpace):
         the cells indices. Those are returned by basis_span.
         """
         assert self.vs.n_dofs-self.n_dofs_per_end_point > 0, \
-          'Internal error! {} ! > 0'.format(self.vs.n_dofs-self.n_dofs_per_end_point) 
+          'Internal error! {} ! > 0'.format(self.vs.n_dofs-self.n_dofs_per_end_point)
 
         n_unique = (self.vs.n_dofs-self.n_dofs_per_end_point)
         b = i//n_unique

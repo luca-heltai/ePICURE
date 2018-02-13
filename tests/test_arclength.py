@@ -214,13 +214,13 @@ def test_length_constraint():
     vs = BsplineVectorSpace(p, knots)
 
     # Least square parameter points
-    t = linspace(0,1,n_ls) 
+    t = linspace(0,1,n_ls)
 
     # Least square points of the curve
     F = array([cx(t), cy(t), cz(t)])
 
     # Least square matrix
-    M = interpolation_matrix(vs, t)
+    M = InterpolationMatrix(vs, t)
 
     # Control points and curve
     CP = lstsq(M, F.T, rcond=-1)[0]
@@ -263,7 +263,7 @@ def test_more_length_constraints():
     F = array([cx(t), cy(t), cz(t)])
 
     # Least square matrix
-    M = interpolation_matrix(vs, t)
+    M = InterpolationMatrix(vs, t)
 
     # Control points and curve
     CP = lstsq(M, F.T, rcond=None)[0]

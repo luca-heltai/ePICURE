@@ -101,8 +101,8 @@ class BsplineVectorSpace(VectorSpace):
 
     def map_basis_cell(self, i, knot_interval):
         """This method returns the index of the cell_span vector that corresponds to the 
-        i-th basis function. The cell_span takes the cell with respect the cells, 
-        while the knot_interval is with respect the knots. So we have to sum 
+        i-th basis function. The cell_span takes the cell with respect the cells,
+        while the knot_interval is with respect the knots. So we have to sum
         the multiplicity of the knots -1 untill the first knot of the current interval."""
         knot = self.knots[knot_interval]
         n = 0
@@ -159,6 +159,6 @@ class BsplineVectorSpace(VectorSpace):
 class UniformBsplineVectorSpace(BsplineVectorSpace):
     def __init__(self, p, nel):
         nbasis = max(2, nel+1)
-        knots = np.r_[(p)*[0], np.linspace(0,1, nbasis), (p)*[1]] 
+        knots = np.r_[(p)*[0], np.linspace(0,1, nbasis), (p)*[1]]
         BsplineVectorSpace.__init__(self, p, knots)
 
