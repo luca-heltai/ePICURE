@@ -4,7 +4,7 @@ from numpy.polynomial.legendre import leggauss
 from scipy.sparse import lil_matrix, dok_matrix, csc_matrix, csr_matrix
 
 
-def InterpolationMatrix(vs, points, d=0):
+def interpolation_matrix(vs, points, d=0):
     """Compute the Interpolation Matrix associated with the given vector space
     and the given points. This matrix can be used to solve Interpolation and
     Least Square approximations. The matrix which is returned is defined as
@@ -29,7 +29,7 @@ def InterpolationMatrix(vs, points, d=0):
     return np.asmatrix(M)
 
 
-def MassMatrix(vs, nq, quadfun=np.polynomial.legendre.leggauss, matrix_format="FULL", internal="DOK"):
+def mass_matrix(vs, nq, quadfun=np.polynomial.legendre.leggauss, matrix_format="FULL", internal="DOK"):
     """A MassMatrix assembler, computing the sparse matrix 
     
     $M_{ij} =\int_0^1 v_i(x) v_j(x) dx$
@@ -66,7 +66,7 @@ def MassMatrix(vs, nq, quadfun=np.polynomial.legendre.leggauss, matrix_format="F
     return fun[matrix_format]()
 
 
-def StiffnessMatrix(vs, nq, quadfun=np.polynomial.legendre.leggauss, matrix_format="FULL", internal="DOK"):
+def stiffness_matrix(vs, nq, quadfun=np.polynomial.legendre.leggauss, matrix_format="FULL", internal="DOK"):
     """A StiffnessMatrix assembler, computing the sparse matrix
 
     $M_{ij} =\int_0^1 v'_i(x) v'_j(x) dx$

@@ -11,10 +11,10 @@ def test_mass_matrix():
             vs = IteratedVectorSpace(UniformLagrangeVectorSpace(j), np.linspace(0,1,num=i))
             v = np.ones(vs.n_dofs)
             for k in range(2, 10):
-                t = MassMatrix(vs, k)
+                t = mass_matrix(vs, k)
                 assert abs(v.dot(t.dot(v))-1.0) < 10**(-10)
-                csc = MassMatrix(vs, k, matrix_format="CSC")
-                csr = MassMatrix(vs, k, matrix_format="CSR")
+                csc = mass_matrix(vs, k, matrix_format = "CSC")
+                csr = mass_matrix(vs, k, matrix_format = "CSR")
                 assert (t == csc).all() and (t == csr).all()
 
 
@@ -26,9 +26,9 @@ def test_stiffness_matrix():
             vs = IteratedVectorSpace(UniformLagrangeVectorSpace(j), np.linspace(0, 1, num=i))
             v = np.ones(vs.n_dofs)
             for k in range(2, 10):
-                t = StiffnessMatrix(vs, k)
-                csc = StiffnessMatrix(vs, k, matrix_format="CSC")
-                csr = StiffnessMatrix(vs, k, matrix_format="CSR")
+                t = stiffness_matrix(vs, k)
+                csc = stiffness_matrix(vs, k, matrix_format = "CSC")
+                csr = stiffness_matrix(vs, k, matrix_format = "CSR")
                 assert (t == csc).all() and (t == csr).all()
 
 #test_mass_matrix()

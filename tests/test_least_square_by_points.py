@@ -35,7 +35,7 @@ def test_ls_points():
     F = array([cx(t), cy(t), cz(t)])
 
     # Least square matrix
-    M = InterpolationMatrix(vs, t)
+    M = interpolation_matrix(vs, t)
 
     # Control points and curve
     CP = lstsq(M, F.T, rcond=-1)[0]

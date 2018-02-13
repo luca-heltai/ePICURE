@@ -17,7 +17,7 @@ def interpolation(f, vs, q):
     assert len(q) == n, \
            'The number of points must be equal to the number of dofs'
     
-    M = InterpolationMatrix(vs, q)
+    M = interpolation_matrix(vs, q)
     b = f(np.array(q))
     c = solve(M, b)
 

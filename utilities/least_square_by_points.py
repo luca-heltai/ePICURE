@@ -17,7 +17,7 @@ def least_square_by_points(vs, points, q):
     assert len(q) >= n, \
            'The number of points must be greater or equal to the number of dofs'
     
-    M = InterpolationMatrix(vs, q)
+    M = interpolation_matrix(vs, q)
     b = points
     c = lstsq(M, b, rcond=-1)[0]
 
