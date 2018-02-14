@@ -37,7 +37,7 @@ class LagrangeVectorSpace(VectorSpace):
 
 class UniformLagrangeVectorSpace(LagrangeVectorSpace):
     """A python interface used to describe *one dimensional lagrange basis functions
-    functions* on n equispaced quadrature points. 
+    functions* on n equispaced quadrature points.
     """
     def __init__(self, n, continuous=True):
          LagrangeVectorSpace.__init__(self, np.linspace(0, 1, n), continuous)

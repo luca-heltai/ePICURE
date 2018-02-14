@@ -3,7 +3,7 @@ import math
 import scipy.special as sp 
 from scipy.interpolate import lagrange 
 from numpy.polynomial.chebyshev import chebgauss
-import sys
+#import sys
 from utilities import *
 from interfaces import *
 #from utilities.arclength import*

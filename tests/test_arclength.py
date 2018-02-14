@@ -214,7 +214,7 @@ def test_length_constraint():
     vs = BsplineVectorSpace(p, knots)
 
     # Least square parameter points
-    t = linspace(0,1,n_ls) 
+    t = linspace(0,1,n_ls)
 
     # Least square points of the curve
     F = array([cx(t), cy(t), cz(t)])
